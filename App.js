@@ -13,8 +13,8 @@ import Add from './screens/Add.js'
 
 const AppNavigator = createStackNavigator({
   Home:  HomeScreen,
-  database : Add,
-  gallery : ImageSelect
+  Database : Add,
+  Gallery : ImageSelect
 });
  
 export default createAppContainer(AppNavigator);
