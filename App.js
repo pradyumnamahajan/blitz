@@ -8,12 +8,14 @@ import HomeScreen from './screens/HomeScreen.js'
 import ImageSelect from './screens/ImageSelect.js'
 import Add from './screens/Add.js'
 
+import ViewDB from './screens/ViewDB'
+
 
 
 
 const AppNavigator = createStackNavigator({
   Home:  HomeScreen,
-  Database : Add,
+  Database : ViewDB,
   Gallery : ImageSelect
 });
  

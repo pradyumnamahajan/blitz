@@ -122,6 +122,7 @@ export default class ImageSelect extends Component {
 
 
   renderFileUri() {
+
     if (this.state.photo.uri) {
       return <Image
         source={{ uri: this.state.photo.uri }}
@@ -146,6 +147,7 @@ export default class ImageSelect extends Component {
         await RNFS.mkdir(RNFS.DocumentDirectoryPath + '/Realm_db/Database/');
         await RNFS.copyFile(this.state.photo.uri, RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo);
 
+        
         console.log(this.state.photo.uri);
       } catch (e) {
         console.log(e);
@@ -157,8 +159,12 @@ export default class ImageSelect extends Component {
         path: RNFS.DocumentDirectoryPath + '/Realm_db/Database/Crops.realm',
         schema: [cropSchema]
       }).then(realm => {
-        realm.write(() => {
-          const myCrop = realm.create('Crop', {
+        realm.write(async () => {
+          await realm.create('Crop', {
+            //Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
+            // image_uri: Platform.OS === "android" ? 
+            // 'file://' + RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo :
+            // RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo,
             image_uri: 'file://' + RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo,
             data_added: new Date(),
 

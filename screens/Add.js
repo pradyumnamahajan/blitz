@@ -52,9 +52,7 @@ class Add extends Component {
             });
 
         })
-
     }
-
 
     //Alert shown while deleting
     del_alert = async (image_object) => { 
@@ -126,7 +124,6 @@ class Add extends Component {
 
             }
 
-
             console.log(image_data_array)
 
             return (
@@ -135,14 +132,14 @@ class Add extends Component {
 
                     <FlatList
                         data={image_data_array}
-                        renderItem={({ item }) => (
+                        renderItem = { ( { item } ) => (
 
                             <View style={styles.standalone}>
-                                <SwipeRow leftOpenValue={75} rightOpenValue={-75} disableRightSwipe={true} preview={true} closeOnRowOpen={true} >
-
-
+                                <SwipeRow leftOpenValue={75} rightOpenValue={-75} disableRightSwipe={true} preview={true} closeOnRowOpen={false} >
+                                    
                                     <TouchableHighlight onPress={() => { this.del_alert(item) }} style={styles.highlight} >
                                         <View style={styles.standaloneRowBack} >
+
                                             <View>
                                                 <Text></Text>
                                                 <Text>Delete</Text>
@@ -151,18 +148,21 @@ class Add extends Component {
                                         </View>
                                     </TouchableHighlight>
 
-
-
-
-
                                     <View style={styles.standaloneRowFront}>
-                                        <Image
-                                            style={{ width: 50, height: 50, margin: 1, flex: 1 }}
-                                            source={{ uri: item.image_uri }}
-                                        />
 
-                                        <Text style={{ flex: 1 }}>{item.classify}</Text>
+                                            <Image
+                                                style={{ flex:1, width: Dimensions.get('window').width / 3, height: Dimensions.get('window').width / 3, margin: 1}}
+                                                source={{ uri: item.image_uri }}
+                                            />
+
+
+                                        
+                                        <View style={{flex:1, justifyContent:'center'}}>
+                                            <Text style={{textAlign:"center"}}>{item.classify}</Text>
+                                        </View>
+                                        
                                     </View>
+
                                 </SwipeRow>
                             </View>
 
@@ -191,25 +191,24 @@ const styles = StyleSheet.create({
     },
     standalone: {
 
-        height: 100,
+        
     },
     highlight: {
-        height: 100,
+        height: Dimensions.get("window").width/3
     },
 
     standaloneRowFront: {
-        alignItems: 'flex-start',
+        
         backgroundColor: 'white',
-        //justifyContent: 'center',
-        alignSelf: 'stretch',
-        height: 100,
+        justifyContent:"center",
+        flex:1,
+        flexDirection:'row'
+
     },
     standaloneRowBack: {
         alignItems: 'flex-end',
         backgroundColor: 'orange',
         flex: 1,
-        //flexDirection: 'row',
-        //justifyContent: 'space-between',
         alignSelf: 'stretch',
         padding: 15,
         height: 100,
