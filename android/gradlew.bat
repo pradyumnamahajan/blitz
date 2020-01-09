@@ -32,6 +32,8 @@ set APP_HOME=%DIRNAME%
 @rem Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
 set DEFAULT_JVM_OPTS="-Xmx64m" "-Xms64m"
 
+@rem set DEFAULT_JVM_OPTS=-Dhttp.proxyHost=XXXX -Dhttp.proxyPort=XXXX -Dhttp.proxyUser=XXXX -Dhttp.proxyPassword=XXXX  -Dhttps.proxyHost=XXXX -Dhttps.proxyPort=XXXX -Dhttps.proxyUser=XXXX-Dhttps.proxyPassword=XXXX
+
 @rem Find java.exe
 if defined JAVA_HOME goto findJavaFromJavaHome
 

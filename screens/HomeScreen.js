@@ -20,20 +20,12 @@ export default class HomeScreen extends Component{
             <Text style={styles.buttonText}>Database</Text>
           </TouchableOpacity>
 
-
-
-        
-
-
           <TouchableOpacity onPress={this.chooseImage} style={styles.button}
             onPress={() => this.props.navigation.navigate('Gallery')}>
             <Text style={styles.buttonText}>Gallery</Text>
           </TouchableOpacity>
 
         </View>
-
-
-        
 
       </ImageBackground>
     );
