@@ -43,6 +43,7 @@ export default class ImageSelect extends Component {
     super(props)
     this.state = {
       photo: '',
+      prediction: null,
     }
   }
 
@@ -59,7 +60,7 @@ export default class ImageSelect extends Component {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       }
-   
+
       else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
         alert(response.customButton);
@@ -81,7 +82,8 @@ export default class ImageSelect extends Component {
         skipBackup: true,
         path: 'images',
       },
-    };
+    }
+
     ImagePicker.launchCamera(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -95,33 +97,13 @@ export default class ImageSelect extends Component {
           photo: response,
         });
       }
-    });
+    })
 
   }
 
-  
-  handleUploadPhoto = () => {
-    fetch("http://blitz-crop-app.appspot.com/analyze", {
-      method: "POST",
-      body: createFormData(this.state.photo, { userId: "123" })
-    })
-      .then(response => response.text())
-      .then(response => {
-        console.log(response)
-        console.log("upload succes", response);
-        alert("Upload success!");
-        this.setState({
-          photo: ''
-        });
-      })
-      .catch(error => {
-        console.log("upload error", error);
-        alert("Upload failed!");
-      });
-  };
 
 
-  renderFileUri() {
+  renderFileUri = () => {
 
     if (this.state.photo.uri) {
       return <Image
@@ -136,6 +118,54 @@ export default class ImageSelect extends Component {
     }
   }
 
+  handleUploadPhoto = async () => {
+    console.log('type '+ this.state.photo.uri.toString())
+    var photo = {
+      type: this.state.photo.type,
+      uri: this.state.photo.uri,
+      name: 'uploadImage.png',
+    };
+
+
+
+    var formData = new FormData();
+
+    formData.append('submit', 'ok');
+    formData.append('file', photo);
+
+    //console.log(formData['file']);
+
+    await fetch("https://blitz-crop-app.appspot.com/analyze", {
+      method: "POST",
+      headers: {
+        //Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+      body: formData,
+    })
+      .then(async response => {
+        console.log('response '+response)
+        return response.json()
+      })
+      .then(async response => {
+        console.log(response)
+
+        this.setState({
+          prediction: response.result,
+        });
+
+        console.log('response = ' + response.result)
+        console.log('Prediction- ' + this.state.prediction) 
+        await this.addImgToDB()
+        
+
+      })
+      .catch(error => {
+        console.log("upload error", error)
+        alert("Upload failed!")
+      })
+  }
+
   addImgToDB = async () => {
     try {
 
@@ -147,7 +177,7 @@ export default class ImageSelect extends Component {
         await RNFS.mkdir(RNFS.DocumentDirectoryPath + '/Realm_db/Database/');
         await RNFS.copyFile(this.state.photo.uri, RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo);
 
-        
+
         console.log(this.state.photo.uri);
       } catch (e) {
         console.log(e);
@@ -158,8 +188,9 @@ export default class ImageSelect extends Component {
       await Realm.open({
         path: RNFS.DocumentDirectoryPath + '/Realm_db/Database/Crops.realm',
         schema: [cropSchema]
-      }).then(realm => {
+      }).then( realm => {
         realm.write(async () => {
+          let prediction = (this.state.prediction != null) ? this.state.prediction : "Not classified"
           await realm.create('Crop', {
             //Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
             // image_uri: Platform.OS === "android" ? 
@@ -167,12 +198,23 @@ export default class ImageSelect extends Component {
             // RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo,
             image_uri: 'file://' + RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo,
             data_added: new Date(),
+            classify: prediction,
+
 
           })
         })
 
-        alert("Image saved successfully to database");
+        if (this.state.prediction != null) {
+          alert("Image Classified and saved to Database successfully");
+        }
+        else {
+          alert("Image saved successfully to database");
+        }
 
+        this.setState( prevstate => ({
+          photo: '',
+          prediction: null,
+        }))
       })
 
     } catch (e) {
