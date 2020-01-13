@@ -20,8 +20,18 @@ const AppNavigator = createStackNavigator({
       headerShown: displayHeader,
     }
   },
-  Database: ViewDB,
-  Gallery: ImageSelect,
+  Database: {
+    screen: ViewDB,
+    // navigationOptions: {
+    //   headerShown: displayHeader,
+    // },
+  },
+  'Select Image': {
+    screen: ImageSelect,
+    navigationOptions: {
+      headerShown: displayHeader,
+    },
+  },
 })
  
 export default createAppContainer(AppNavigator);

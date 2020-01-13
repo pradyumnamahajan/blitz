@@ -10,7 +10,13 @@ import {
     TouchableOpacity,
     Modal,
     Button,
-    SafeAreaView
+    SafeAreaView,
+    TouchableHighlight
+   
+    
+
+
+
 } from 'react-native'
 
 import RNFS from 'react-native-fs'
@@ -18,6 +24,7 @@ import Realm from 'realm'
 import cropSchema from './../storage/realm/cropSchema'
 
 import { SwipeListView } from 'react-native-swipe-list-view';
+//import { TouchableNativeFeedback, TouchableWithoutFeedback } from 'react-native-gesture-handler'      
 
 // {"classify": "Not classified", "data_added": 2020-01-11T16:56:45.317Z, "image_uri": "file:///Users/manasimahajan/Library/Developer/CoreSimulator/Devices/0A43928B-D8CE-4E95-9DC2-E5589A4EE4B3/data/Containers/Data/Application/43C4C281-61BB-4DFF-9E57-3616D37E1138/Documents/Realm_db/Images/45211DEC-3757-4B8D-98C4-8CF088DA5430.jpg", "key": "2", "lat": null, "lon": null}
 
@@ -30,7 +37,7 @@ export default class ViewDB extends Component {
             dbdata: [],
             isLoading: true,
             modalVisible: false,
-            modalObject: {},
+            modalObject: {data_added:""},
         }
     }
 
@@ -119,12 +126,11 @@ export default class ViewDB extends Component {
                         // just use it ignoring the other object
 
 
-                        <React.Fragment>
+                        <React.Fragment >
 
 
                             <Modal
                                 visible={this.state.modalVisible}
-                                
                             >
                                 <SafeAreaView style={{height:'100%'}}>
                                     <Image
@@ -137,8 +143,9 @@ export default class ViewDB extends Component {
                                         Classification: {this.state.modalObject.classify}
                                     </Text>
 
+                                    {console.log(this.state.modalObject.data_added)}
                                     <Text style={styles.modalText}>
-                                        Date Added: {Date(this.state.modalObject.data_added)}
+                                        Added on: {this.state.modalObject.data_added.toString().replace(' ',', ')}
                                     </Text>
                                     <Text style={styles.modalText}>
                                         Latitude: {this.state.modalObject.lat}
@@ -157,20 +164,32 @@ export default class ViewDB extends Component {
                             </Modal>
 
 
-                            <View style={styles.rowStyle}>
-                                <Image
-                                    style={styles.previewImage}
-                                    source={{ uri: rowData.item.image_uri }}
-                                />
-                                {/* {console.log(rowData.item)} */}
-                                <View style={styles.centeredItem}>
-                                    <Text onPress={() => this.toggleModal(rowData.item)}>
-                                        {rowData.item.classify}
-                                    </Text>
+                            {/* <View style={{backgroundColor:'white'}}> */}
+                            <TouchableHighlight  onPress={() => this.toggleModal(rowData.item)}>
+                                
+                                <View style={styles.rowStyle}>
+                                    {console.log(rowData.item)}
+                                    <Image
+                                        style={styles.previewImage}
+                                        source={{ uri: rowData.item.image_uri }}
+                                    />
+
+                                    <View style={styles.centeredItem}>
+                                        <Text>
+                                            {rowData.item.classify}
+                                        </Text>
+                                    </View>
+
+
                                 </View>
 
-                            </View>
+  
 
+                            </TouchableHighlight>
+
+
+                            {/* </View> */}
+                            
                         </React.Fragment>
                     )}
 
@@ -236,6 +255,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         backgroundColor: 'white',
+        borderBottomColor: 'lightgray',
+        borderBottomWidth: 1,
+        paddingBottom: 1,
     },
 
     previewImage: {
