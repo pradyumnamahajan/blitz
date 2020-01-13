@@ -10,13 +10,16 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  Platform
+  Platform,
+  Alert,
+  PermissionsAndroid
 } from 'react-native';
 
 
 
 import RNFS from 'react-native-fs'
 import Realm from 'realm'
+import Geolocation from '@react-native-community/geolocation';
 import cropSchema from './../storage/realm/cropSchema'
 
 
@@ -38,12 +41,36 @@ const createFormData = (photo, body) => {
 };
 
 
+const requestLocationPermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Location Permission',
+        message:
+          'Cropdex needs to access your Location',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('Permission granted');
+    } else {
+      console.log('permission denied');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+}
+
 export default class ImageSelect extends Component {
   constructor(props) {
     super(props)
     this.state = {
       photo: '',
       prediction: null,
+      location:null,
     }
   }
 
@@ -76,30 +103,6 @@ export default class ImageSelect extends Component {
     });
   }
 
-  launchCamera = () => {
-    let options = {
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    }
-
-    ImagePicker.launchCamera(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-        alert(response.customButton);
-      } else {
-        this.setState({
-          photo: response,
-        });
-      }
-    })
-
-  }
 
 
 
@@ -119,55 +122,87 @@ export default class ImageSelect extends Component {
   }
 
   handleUploadPhoto = async () => {
-    console.log('type '+ this.state.photo.uri.toString())
-    var photo = {
-      type: this.state.photo.type,
-      uri: this.state.photo.uri,
-      name: 'uploadImage.png',
-    };
 
+    try {
+      var photo = {
+        type: this.state.photo.type,
+        uri: this.state.photo.uri,
+        name: 'uploadImage.png',
+      };
 
+      var formData = new FormData();
 
-    var formData = new FormData();
+      formData.append('submit', 'ok');
+      formData.append('file', photo);
 
-    formData.append('submit', 'ok');
-    formData.append('file', photo);
-
-    //console.log(formData['file']);
-
-    await fetch("https://blitz-crop-app.appspot.com/analyze", {
-      method: "POST",
-      headers: {
-        //Accept: 'application/json',
-        'Content-Type': 'multipart/form-data',
-      },
-      body: formData,
-    })
-      .then(async response => {
-        console.log('response '+response)
-        return response.json()
+      let response = await fetch("https://blitz-crop-app.appspot.com/analyze", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        body: formData,
       })
-      .then(async response => {
-        console.log(response)
 
-        this.setState({
-          prediction: response.result,
-        });
 
-        console.log('response = ' + response.result)
-        console.log('Prediction- ' + this.state.prediction) 
-        await this.addImgToDB()
-        
 
-      })
-      .catch(error => {
-        console.log("upload error", error)
-        alert("Upload failed!")
-      })
+      let responseJSON = await response.json()
+
+      this.setState({
+        prediction: responseJSON.result,
+      });
+
+      console.log('response = ' + response.result)
+      console.log('Prediction- ' + this.state.prediction)
+      await this.addImgToDB()
+    } catch (e) {
+      console.log("Error in handleUploadPhoto");
+      console.log(e)
+    }
+
+  }
+
+  
+
+  findCoordinates = async () => {
+    try {
+      if (Platform.OS == "android") {
+        await requestLocationPermission();
+      }
+
+      const config = {
+        authorizationLevel: "whenInUse",
+      }
+
+      await Geolocation.setRNConfiguration(config);
+      Geolocation.getCurrentPosition(
+        (position) => {
+          console.log("find cords" + position);
+          this.setState({ location: position });
+        },
+        error => Alert.alert(error.message),
+
+      );
+
+      console.log("location = " + this.state.location)
+      return true
+    } catch (e) {
+      console.log("Error in findCordinates in ImageSelect.")
+      return false
+    }
+
+  };
+
+  timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   addImgToDB = async () => {
     try {
+      await this.findCoordinates()
+
+      await this.timeout(1000)
+
+      
 
       let datauri = (this.state.photo.uri).split('/');
       const imageinfo = datauri[datauri.length - 1];
@@ -181,45 +216,56 @@ export default class ImageSelect extends Component {
         console.log(this.state.photo.uri);
       } catch (e) {
         console.log(e);
-        console.log('reee');
+        console.log('Error in addImgToDB');
       }
 
+      console.log("waiting")
 
-      await Realm.open({
+      console.log("loc " + this.state.location)
+
+      let realm = await Realm.open({
         path: RNFS.DocumentDirectoryPath + '/Realm_db/Database/Crops.realm',
         schema: [cropSchema]
-      }).then( realm => {
-        realm.write(async () => {
-          let prediction = (this.state.prediction != null) ? this.state.prediction : "Not classified"
-          await realm.create('Crop', {
-            //Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
-            // image_uri: Platform.OS === "android" ? 
-            // 'file://' + RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo :
-            // RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo,
-            image_uri: 'file://' + RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo,
-            data_added: new Date(),
-            classify: prediction,
-
-
-          })
-        })
-
-        if (this.state.prediction != null) {
-          alert("Image Classified and saved to Database successfully");
-        }
-        else {
-          alert("Image saved successfully to database");
-        }
-
-        this.setState( prevstate => ({
-          photo: '',
-          prediction: null,
-        }))
       })
+
+      
+
+      realm.write(async () => {
+
+
+        let x = this.state.location.coords.latitude
+        x = x.toString()
+        let y = this.state.location.coords.longitude
+        y = y.toString()
+
+        console.log("x " + x + " y " + y);
+        let prediction = (this.state.prediction != null) ? this.state.prediction : "Not classified"
+        realm.create('Crop', {
+
+          image_uri: 'file://' + RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo,
+          data_added: new Date(),
+          classify: prediction,
+          lat: x,
+          lon: y,
+        })
+      })
+
+      if (this.state.prediction != null) {
+        alert("Image Classified and saved to Database successfully");
+      }
+      else {
+        alert("Image saved successfully to database");
+      }
+
+      this.setState(prevstate => ({
+        photo: '',
+        prediction: null,
+      }))
+
 
     } catch (e) {
       console.log(e);
-      console.log("Error in db");
+      console.log("Error in addToDB in ImageSelect");
     }
 
   }

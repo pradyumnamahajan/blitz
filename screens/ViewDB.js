@@ -11,12 +11,7 @@ import {
     Modal,
     Button,
     SafeAreaView,
-    TouchableHighlight
-   
-    
-
-
-
+    TouchableHighlight,
 } from 'react-native'
 
 import RNFS from 'react-native-fs'
@@ -73,6 +68,60 @@ export default class ViewDB extends Component {
         })
     }
 
+    updateDB = () => {
+
+    }
+    
+
+    /* Update tgis shit lat long */
+    handleUploadPhoto = async () => {
+        console.log('type ' + this.state.photo.uri.toString())
+        var photo = {
+            type: this.state.photo.type,
+            uri: this.state.photo.uri,
+            name: 'uploadImage.png',
+        };
+
+
+
+        var formData = new FormData();
+
+        formData.append('submit', 'ok');
+        formData.append('file', photo);
+
+        //console.log(formData['file']);
+
+        await fetch("https://blitz-crop-app.appspot.com/analyze", {
+            method: "POST",
+            headers: {
+                //Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+            },
+            body: formData,
+        })
+            .then(async response => {
+                console.log('response ' + response)
+                return response.json()
+            })
+            .then(async response => {
+                console.log(response)
+
+                this.setState({
+                    prediction: response.result,
+                });
+
+                console.log('response = ' + response.result)
+                console.log('Prediction- ' + this.state.prediction)
+                await this.updateDB()
+
+
+            })
+            .catch(error => {
+                console.log("upload error", error)
+                alert("Upload failed!")
+            })
+    }
+
     deleteRow = async (item, rowMap, rowKey) => {
         await Realm.open({
             path: RNFS.DocumentDirectoryPath + '/Realm_db/Database/Crops.realm',
@@ -96,10 +145,6 @@ export default class ViewDB extends Component {
     }
 
     toggleModal = (item) => {
-
-
-
-        
         this.setState(prevState => ({
             modalObject: item,
             modalVisible: !this.state.modalVisible,
@@ -131,6 +176,7 @@ export default class ViewDB extends Component {
 
                             <Modal
                                 visible={this.state.modalVisible}
+                                onRequestClose={this.toggleModal}
                             >
                                 <SafeAreaView style={{height:'100%'}}>
                                     <Image

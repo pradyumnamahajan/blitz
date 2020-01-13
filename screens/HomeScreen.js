@@ -9,7 +9,7 @@ export default class HomeScreen extends Component{
     return(
 
       ///<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <ImageBackground source={require('./crop.png')} style={styles.backgroundImage} blurRadius={3} imageStyle={{ opacity: 0.5 }} >
+      <ImageBackground source={require('./crop.png')} style={styles.backgroundImage} blurRadius={3} imageStyle={{ opacity: 0.8 }} >
         <View style={{flex:2,     justifyContent: 'center'}}>
           <Text style={styles.title}>CropDex</Text>
         </View>
@@ -50,15 +50,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 5,
     borderWidth:2,
-    borderColor:'white',
-    backgroundColor:'black'
+    borderColor:'black',
+    backgroundColor:'white'
 
   },
 
   buttonText: {
     textAlign: 'center',
     fontFamily: "Arial Rounded MT Bold",
-    color:"white",
+    color:"black",
+    fontWeight:'bold',
    
   },
 
