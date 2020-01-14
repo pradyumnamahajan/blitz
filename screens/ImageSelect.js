@@ -243,6 +243,7 @@ export default class ImageSelect extends Component {
         realm.create('Crop', {
 
           image_uri: 'file://' + RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo,
+          image_type: this.state.photo.type,
           data_added: new Date(),
           classify: prediction,
           lat: x,
