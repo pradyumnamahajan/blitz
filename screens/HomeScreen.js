@@ -9,7 +9,7 @@ export default class HomeScreen extends Component{
     return(
 
       ///<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <ImageBackground source={require('./crop.png')} style={styles.backgroundImage} blurRadius={3} imageStyle={{ opacity: 0.8 }} >
+      <ImageBackground source={require('./../assets/crop.png')} style={styles.backgroundImage} blurRadius={3} imageStyle={{ opacity: 0.8 }} >
         <View style={{flex:2,     justifyContent: 'center'}}>
           <Text style={styles.title}>CropDex</Text>
         </View>

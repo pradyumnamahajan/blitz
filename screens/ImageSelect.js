@@ -115,7 +115,7 @@ export default class ImageSelect extends Component {
       />
     } else {
       return <Image
-        source={require('./dummy.png')}
+        source={require('./../assets/dummy.png')}
         style={styles.images}
       />
     }

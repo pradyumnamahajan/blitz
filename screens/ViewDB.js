@@ -33,6 +33,10 @@ export default class ViewDB extends Component {
             isLoading: true,
             modalVisible: false,
             modalObject: { data_added: "" },
+            progressModal: {
+                visibile:false,
+                modalMessage: "",
+            },
         }
     }
 
@@ -66,7 +70,20 @@ export default class ViewDB extends Component {
 
     // {"classify": "Not classified", "data_added": 2020-01-13T19:02:15.572Z, "image_type": "image/jpeg", "image_uri": "file:///Users/manasimahajan/Library/Developer/CoreSimulator/Devices/0A43928B-D8CE-4E95-9DC2-E5589A4EE4B3/data/Containers/Data/Application/0359F365-4AA6-4D4D-B846-BAF538C3FA43/Documents/Realm_db/Images/185B0C6A-E3B0-446D-911A-AD99EB3F5668.jpg", "key": "1", "lat": "37.785834", "lon": "-122.406417"}
 
-    /* Update tgis shit lat long */
+    static navigationOptions = ({ navigation }) => {
+        return {
+            headerRight: () => (
+                <Button
+                    onPress={() => alert('This is a button!')}
+                    title="Info"
+                    color="blue"
+                />
+            )
+        }
+
+
+
+    }
     handleClassifyPhoto = async (item) => {
 
         try {
@@ -80,20 +97,7 @@ export default class ViewDB extends Component {
 
             formData.append('submit', 'ok');
             formData.append('file', photo);
-            // await fetch("http://blitz-crop-app.appspot.com/analyze", {
-            //     "credentials": "omit",
-            //     "headers": {
-            //         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:72.0) Gecko/20100101 Firefox/72.0",
-            //         "Accept": "*/*",
-            //         "Accept-Language": "en-US,en;q=0.5",
-            //         "Content-Type": "multipart/form-data; boundary=---------------------------129344616721202538351910050174"
-            //     },
-            //     "referrer": "http://blitz-crop-app.appspot.com/",
-
-            //     "method": "POST",
-            //     "mode": "cors"
-            // });
-
+           
             console.log("sending request")
             let response = await fetch("https://blitz-crop-app.appspot.com/analyze", {
                 method: "POST",
@@ -111,12 +115,6 @@ export default class ViewDB extends Component {
             let prediction = responseJSON.result.toString()
 
 
-
-            //     prediction: responseJSON.result,
-            //   });
-
-            //   console.log('response = ' + response.result)
-            //   console.log('Prediction- ' + this.state.prediction)
             await this.updateDB(item, prediction)
         } catch (e) {
             console.log("Error in handleUploadPhoto");
@@ -149,6 +147,7 @@ export default class ViewDB extends Component {
         console.log("Done")
         //Not very proud of this line, but it works
         this.componentDidMount()
+        return true
 
     }
 
@@ -182,6 +181,51 @@ export default class ViewDB extends Component {
         }))
     }
 
+    toggleProgressModal = () => {
+        this.setState(prevState => ({
+            progressModal: {
+                visibile: !prevState.progressModal.visibile,
+                modalMessage: prevState.progressModal.modalMessage,
+            }
+        }))
+    }
+
+    classifyAll = async () => {
+
+        const todo=[]
+
+        for (let index = 0; index < this.state.dbdata.length; index++) {
+            const item = this.state.dbdata[index];
+            if(item.classify=="Not classified"){
+                todo.push(item)
+            }
+        }
+
+        for (let index = 0; index < todo.length; index++) {
+            const item = todo[index]
+            this.setState(prevState => ({
+                progressModal: {
+                    visibile: true,
+                    modalMessage: `${index+1}/${todo.length}`,
+                }
+            }))
+            await this.handleClassifyPhoto(item)
+            
+        }
+
+        this.setState(prevState => ({
+            progressModal: {
+                visibile: !prevState.progressModal.visibile,
+                modalMessage: "Done",
+            }
+        }))
+
+
+
+    }
+    
+
+
     render() {
 
         if (this.state.isLoading) {
@@ -191,7 +235,7 @@ export default class ViewDB extends Component {
         }
 
         return (
-            <SafeAreaView>
+            <SafeAreaView style={{ height: Dimensions.get('window').height }}>
                 <SwipeListView
                     useFlatList={true}
                     data={this.state.dbdata}
@@ -219,7 +263,7 @@ export default class ViewDB extends Component {
                                         Classification: {this.state.modalObject.classify}
                                     </Text>
 
-                                    {console.log(this.state.modalObject.data_added)}
+
                                     <Text style={styles.modalText}>
                                         Added on: {this.state.modalObject.data_added.toString().replace(' ', ', ')}
                                     </Text>
@@ -241,11 +285,11 @@ export default class ViewDB extends Component {
                             </Modal>
 
 
-                            {/* <View style={{backgroundColor:'white'}}> */}
+
                             <TouchableHighlight onPress={() => this.toggleModal(rowData.item)}>
 
                                 <View style={styles.rowStyle}>
-                                    {console.log(rowData.item)}
+
                                     <Image
                                         style={styles.previewImage}
                                         source={{ uri: rowData.item.image_uri }}
@@ -264,6 +308,8 @@ export default class ViewDB extends Component {
 
                             </TouchableHighlight>
 
+                            
+
                         </React.Fragment>
                     )}
 
@@ -274,7 +320,13 @@ export default class ViewDB extends Component {
                                 <TouchableOpacity 
                                     onPress={() => this.handleClassifyPhoto(rowData.item)}
                                 >
-                                    <Text>Classify</Text>
+                                    <View style={[styles.centeredItem, {flex: 2}]}>
+                                        <Image source={require('./../assets/leaf.png')} style={styles.hiddenImage} resizeMode='contain' />
+                                    </View>
+                                    <View style={{flex:1}}>
+                                        <Text>Classify</Text>
+                                    </View>
+                                   
                                 </TouchableOpacity>
                             </View>
 
@@ -300,15 +352,22 @@ export default class ViewDB extends Component {
 
 
                     previewOpenDelay={2000}
-
-                /* This can be Enabled if we want Row to close after some time */
-                // onRowOpen={(rowKey, rowMap) => {
-                //     setTimeout(() => {
-                //         rowMap[rowKey].closeRow()
-                //     }, 5000)
-                // }}
-
                 />
+
+                
+                <View style={[styles.centeredItem, this.state.progressModal.visibile?{borderWidth: 2}:{display:"none"}]}>
+                    <View style={styles.loadingModal}>
+
+                        <Text>{this.state.progressModal.modalMessage}</Text>
+                        <Button onPress={this.classifyAll} title="Close" />
+
+                    </View>
+                </View>
+
+                
+
+                
+
 
             </SafeAreaView>
 
@@ -347,7 +406,7 @@ const styles = StyleSheet.create({
     centeredItem: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
 
     delete: {
@@ -369,7 +428,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         top: 0,
         width: Dimensions.get('window').width / 5,
-        backgroundColor: '#31ca31',
+        flex:1,
     },
 
     modalStyle: {
@@ -382,7 +441,27 @@ const styles = StyleSheet.create({
     modalText: {
         fontSize: Dimensions.get("window").width / 20,
         margin: 5
-    }
+    },
+
+    hiddenImage: {
+        flex:3,
+        height: Dimensions.get('window').width / 10,
+        width: Dimensions.get('window').width / 10,
+    },
+
+    loadingModal: {
+
+        position:"absolute",
+
+        alignItems: 'center',
+        justifyContent: 'center',
+        
+        bottom: Dimensions.get('window').height /9,
+        
+        width: Dimensions.get('window').width * 0.8,
+        height: Dimensions.get('window').height /10,
+        backgroundColor: 'lightgray',
+    },
 
 })
 
