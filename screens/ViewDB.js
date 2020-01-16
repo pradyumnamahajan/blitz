@@ -156,7 +156,7 @@ export default class ViewDB extends Component {
                                     justifyContent: "flex-start",
                                     alignItems: "center"
                                 }}>
-                                <IconMaterial name="delete-circle" />
+                                <IconMaterial name="delete-outline" />
                                 <Text>     Delete All</Text>
 
                                 </View>
@@ -437,14 +437,15 @@ export default class ViewDB extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.handleClassifyPhoto(rowData.item)}
                                 >
-                                    {/* <View style={[styles.centeredItem, { flex: 2 }]}>
-                                        <Image source={require('./../assets/leaf.png')} style={styles.hiddenImage} resizeMode='contain' />
+                                    
+                                    <View style={styles.bottomItem} >
+                                        <Icon name="leaf" size={Dimensions.get('window').width / 15} color='black' />
                                     </View>
-                                    <View style={{ flex: 1 }}>
+                                    <View style={styles.topItem} >
                                         <Text>Classify</Text>
-                                    </View> */}
-
-                                    <Icon name="leaf" size={Dimensions.get('window').width / 15} color='green' />
+                                    </View>
+                                    
+                                    
                                 </TouchableOpacity>
                             </View>
 
@@ -453,7 +454,12 @@ export default class ViewDB extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.deleteRow(rowData.item, rowMap, rowData.item.key)}
                                 >
-                                    <Icon name="trash" size={Dimensions.get('window').width / 15} color='red'/>
+                                    <View style={styles.bottomItem} >
+                                        <Icon name="trash" size={Dimensions.get('window').width / 15} color='black' />
+                                    </View>
+                                    <View style={styles.topItem} >
+                                        <Text>Delete</Text>
+                                    </View>
                                     
                                     
                                 </TouchableOpacity>
@@ -474,12 +480,12 @@ export default class ViewDB extends Component {
                     previewOpenDelay={2000}
                 />
 
-
+                
+                {/* ProgressModal */}
                 <View style={[styles.centeredItem, this.state.progressModal.visibile ? { } : { display: "none" }]}>
                     <View style={styles.loadingModal}>
 
                         <Text>{this.state.progressModal.modalMessage}</Text>
-                        <Button onPress={this.classifyAll} title="Close" />
 
                     </View>
                 </View>
@@ -549,6 +555,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
+    topItem: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+
+    bottomItem: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+
     delete: {
         position: 'absolute',
         alignItems: 'center',
@@ -563,12 +581,14 @@ const styles = StyleSheet.create({
     classify: {
         position: 'absolute',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-around',
         right: Dimensions.get('window').width / 5,
         bottom: 0,
         top: 0,
         width: Dimensions.get('window').width / 5,
         flex: 1,
+        textAlign:'center'
+
     },
 
     modalStyle: {
