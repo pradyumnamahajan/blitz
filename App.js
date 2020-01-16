@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import { Platform } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
+import { MenuProvider } from 'react-native-popup-menu';
 import HomeScreen from './screens/HomeScreen.js'
 
 import ImageSelect from './screens/ImageSelect.js'
@@ -34,5 +35,12 @@ const AppNavigator = createStackNavigator({
   },
 })
  
-export default createAppContainer(AppNavigator);
 
+const AppContainer = createAppContainer(AppNavigator);
+
+
+export default () => (
+  <MenuProvider>
+    <AppContainer />
+  </MenuProvider>
+)

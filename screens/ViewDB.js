@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 
 import {
     View,
@@ -19,9 +19,22 @@ import Realm from 'realm'
 import cropSchema from './../storage/realm/cropSchema'
 
 import { SwipeListView } from 'react-native-swipe-list-view';
-//import { TouchableNativeFeedback, TouchableWithoutFeedback } from 'react-native-gesture-handler'      
+import {
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+} from 'react-native-popup-menu';
 
-// {"classify": "Not classified", "data_added": 2020-01-11T16:56:45.317Z, "image_uri": "file:///Users/manasimahajan/Library/Developer/CoreSimulator/Devices/0A43928B-D8CE-4E95-9DC2-E5589A4EE4B3/data/Containers/Data/Application/43C4C281-61BB-4DFF-9E57-3616D37E1138/Documents/Realm_db/Images/45211DEC-3757-4B8D-98C4-8CF088DA5430.jpg", "key": "2", "lat": null, "lon": null}
+import Icon from 'react-native-vector-icons/Entypo';
+
+
+
+
+
+    
+
+
 
 
 export default class ViewDB extends Component {
@@ -34,13 +47,17 @@ export default class ViewDB extends Component {
             modalVisible: false,
             modalObject: { data_added: "" },
             progressModal: {
-                visibile:false,
+                visibile: false,
                 modalMessage: "",
             },
+            count:0,
         }
     }
 
     //Loads images from database
+    
+    
+
     componentDidMount = async () => {
         let realm = await Realm.open({
             path: RNFS.DocumentDirectoryPath + '/Realm_db/Database/Crops.realm',
@@ -65,25 +82,46 @@ export default class ViewDB extends Component {
             isLoading: false
         }));
 
+        this.props.navigation.setParams({ 
+            classifyAll: this.classifyAll, 
+        });
+
     }
-
-
     // {"classify": "Not classified", "data_added": 2020-01-13T19:02:15.572Z, "image_type": "image/jpeg", "image_uri": "file:///Users/manasimahajan/Library/Developer/CoreSimulator/Devices/0A43928B-D8CE-4E95-9DC2-E5589A4EE4B3/data/Containers/Data/Application/0359F365-4AA6-4D4D-B846-BAF538C3FA43/Documents/Realm_db/Images/185B0C6A-E3B0-446D-911A-AD99EB3F5668.jpg", "key": "1", "lat": "37.785834", "lon": "-122.406417"}
 
     static navigationOptions = ({ navigation }) => {
         return {
             headerRight: () => (
-                <Button
-                    onPress={() => alert('This is a button!')}
-                    title="Info"
-                    color="blue"
-                />
+
+      
+
+
+                <View style={{padding: 15}}>
+
+
+
+                    <Menu>
+                        <MenuTrigger ><Icon name="dots-three-vertical" color="black" /></MenuTrigger>
+                        <MenuOptions>
+
+                            <MenuOption onSelect={navigation.getParam('classifyAll')} text='Classify All' />
+                           
+                        </MenuOptions>
+                    </Menu>
+
+                </View>
+
+
             )
+
         }
 
 
 
     }
+
+
+
     handleClassifyPhoto = async (item) => {
 
         try {
@@ -97,7 +135,7 @@ export default class ViewDB extends Component {
 
             formData.append('submit', 'ok');
             formData.append('file', photo);
-           
+
             console.log("sending request")
             let response = await fetch("https://blitz-crop-app.appspot.com/analyze", {
                 method: "POST",
@@ -137,13 +175,13 @@ export default class ViewDB extends Component {
             .objects('Crop')
             .filtered('image_uri = "' + item.image_uri + '"')
 
-        
+
         console.log(cropToBeUpdated[0])
 
-        realm.write(()=> {
-            cropToBeUpdated[0].classify=prediction
+        realm.write(() => {
+            cropToBeUpdated[0].classify = prediction
         })
-        
+
         console.log("Done")
         //Not very proud of this line, but it works
         this.componentDidMount()
@@ -190,13 +228,17 @@ export default class ViewDB extends Component {
         }))
     }
 
+
+
     classifyAll = async () => {
 
-        const todo=[]
+        console.log('Classfying')
+        
+        const todo = []
 
         for (let index = 0; index < this.state.dbdata.length; index++) {
             const item = this.state.dbdata[index];
-            if(item.classify=="Not classified"){
+            if (item.classify == "Not classified") {
                 todo.push(item)
             }
         }
@@ -206,16 +248,16 @@ export default class ViewDB extends Component {
             this.setState(prevState => ({
                 progressModal: {
                     visibile: true,
-                    modalMessage: `${index+1}/${todo.length}`,
+                    modalMessage: `${index + 1}/${todo.length}`,
                 }
             }))
             await this.handleClassifyPhoto(item)
-            
+
         }
 
         this.setState(prevState => ({
             progressModal: {
-                visibile: !prevState.progressModal.visibile,
+                visibile: false,
                 modalMessage: "Done",
             }
         }))
@@ -223,7 +265,7 @@ export default class ViewDB extends Component {
 
 
     }
-    
+
 
 
     render() {
@@ -235,7 +277,12 @@ export default class ViewDB extends Component {
         }
 
         return (
+
             <SafeAreaView style={{ height: Dimensions.get('window').height }}>
+
+
+
+
                 <SwipeListView
                     useFlatList={true}
                     data={this.state.dbdata}
@@ -289,17 +336,21 @@ export default class ViewDB extends Component {
                             <TouchableHighlight onPress={() => this.toggleModal(rowData.item)}>
 
                                 <View style={styles.rowStyle}>
+                                    <View style={styles.rowStyleInner}>
+                                        <Image
+                                            style={styles.previewImage}
+                                            source={{ uri: rowData.item.image_uri }}
+                                        />
 
-                                    <Image
-                                        style={styles.previewImage}
-                                        source={{ uri: rowData.item.image_uri }}
-                                    />
+                                        <View style={styles.centeredItem}>
+                                            <Text>
+                                                {rowData.item.classify}
+                                            </Text>
+                                        </View>
 
-                                    <View style={styles.centeredItem}>
-                                        <Text>
-                                            {rowData.item.classify}
-                                        </Text>
                                     </View>
+
+                                    
 
 
                                 </View>
@@ -308,7 +359,7 @@ export default class ViewDB extends Component {
 
                             </TouchableHighlight>
 
-                            
+
 
                         </React.Fragment>
                     )}
@@ -317,16 +368,17 @@ export default class ViewDB extends Component {
 
                         <React.Fragment>
                             <View style={styles.classify}>
-                                <TouchableOpacity 
+                                <TouchableOpacity
                                     onPress={() => this.handleClassifyPhoto(rowData.item)}
                                 >
-                                    <View style={[styles.centeredItem, {flex: 2}]}>
+                                    {/* <View style={[styles.centeredItem, { flex: 2 }]}>
                                         <Image source={require('./../assets/leaf.png')} style={styles.hiddenImage} resizeMode='contain' />
                                     </View>
-                                    <View style={{flex:1}}>
+                                    <View style={{ flex: 1 }}>
                                         <Text>Classify</Text>
-                                    </View>
-                                   
+                                    </View> */}
+
+                                    <Icon name="leaf" size={Dimensions.get('window').width / 15} color='green' />
                                 </TouchableOpacity>
                             </View>
 
@@ -335,7 +387,9 @@ export default class ViewDB extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.deleteRow(rowData.item, rowMap, rowData.item.key)}
                                 >
-                                    <Text>Delete</Text>
+                                    <Icon name="trash" size={Dimensions.get('window').width / 15} color='red'/>
+                                    
+                                    
                                 </TouchableOpacity>
                             </View>
 
@@ -354,8 +408,8 @@ export default class ViewDB extends Component {
                     previewOpenDelay={2000}
                 />
 
-                
-                <View style={[styles.centeredItem, this.state.progressModal.visibile?{borderWidth: 2}:{display:"none"}]}>
+
+                <View style={[styles.centeredItem, this.state.progressModal.visibile ? { } : { display: "none" }]}>
                     <View style={styles.loadingModal}>
 
                         <Text>{this.state.progressModal.modalMessage}</Text>
@@ -364,12 +418,13 @@ export default class ViewDB extends Component {
                     </View>
                 </View>
 
-                
 
-                
+
+
 
 
             </SafeAreaView>
+
 
         )
     }
@@ -390,10 +445,29 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         backgroundColor: 'white',
+        // borderBottomColor: 'lightgray',
+        // borderBottomWidth: 1,
+        paddingBottom: 1,
+        backgroundColor:"#f2f2f2",
+
+        
+        
+    },
+
+    rowStyleInner: {
+        justifyContent: "center",
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: 'white',
         borderBottomColor: 'lightgray',
         borderBottomWidth: 1,
         paddingBottom: 1,
+        marginTop:10,
+        marginHorizontal: 10,
+        
     },
+
+   
 
     previewImage: {
         flex: 1,
@@ -417,7 +491,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         top: 0,
         width: Dimensions.get('window').width / 5,
-        backgroundColor: 'red',
+        //backgroundColor: 'red',
     },
 
     classify: {
@@ -428,7 +502,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         top: 0,
         width: Dimensions.get('window').width / 5,
-        flex:1,
+        flex: 1,
     },
 
     modalStyle: {
@@ -444,22 +518,22 @@ const styles = StyleSheet.create({
     },
 
     hiddenImage: {
-        flex:3,
+        flex: 3,
         height: Dimensions.get('window').width / 10,
         width: Dimensions.get('window').width / 10,
     },
 
     loadingModal: {
 
-        position:"absolute",
+        position: "absolute",
 
         alignItems: 'center',
         justifyContent: 'center',
-        
-        bottom: Dimensions.get('window').height /9,
-        
+
+        bottom: Dimensions.get('window').height / 9,
+
         width: Dimensions.get('window').width * 0.8,
-        height: Dimensions.get('window').height /10,
+        height: Dimensions.get('window').height / 10,
         backgroundColor: 'lightgray',
     },
 
