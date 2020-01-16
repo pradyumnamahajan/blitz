@@ -27,6 +27,7 @@ import {
 } from 'react-native-popup-menu';
 
 import Icon from 'react-native-vector-icons/Entypo';
+import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 
@@ -101,10 +102,65 @@ export default class ViewDB extends Component {
 
 
                     <Menu>
-                        <MenuTrigger ><Icon name="dots-three-vertical" color="black" /></MenuTrigger>
+                        <MenuTrigger >
+                            <View style={{
+                                paddingHorizontal:10,
+                            }}
+                            >
+                                <Icon name="dots-three-vertical" color="black" />
+                            </View>
+                            
+                        </MenuTrigger>
                         <MenuOptions>
 
-                            <MenuOption onSelect={navigation.getParam('classifyAll')} text='Classify All' />
+                            <MenuOption onSelect={navigation.getParam('classifyAll')} >
+                                <View style={{
+                                    paddingVertical: 15,
+                                    paddingHorizontal: 10,
+                                    flexDirection: "row",
+                                    justifyContent: "flex-start",
+                                    alignItems: "center"
+                                }}>
+                                <Icon name="leaf" />
+                                <Text>     Classify All</Text>
+
+                                </View>
+
+
+                                
+
+                            </MenuOption>
+                            <MenuOption >
+
+
+                                <View style={{
+                                    paddingVertical: 15,
+                                    paddingHorizontal: 10,
+                                    flexDirection: "row",
+                                    justifyContent: "flex-start",
+                                    alignItems: "center"
+                                }}>
+                                <IconMaterial name="database-export" />
+                                <Text>     Export</Text>
+
+                                </View>
+                            </MenuOption>
+
+                            <MenuOption >
+
+
+                                <View style={{
+                                    paddingVertical: 15,
+                                    paddingHorizontal: 10,
+                                    flexDirection: "row",
+                                    justifyContent: "flex-start",
+                                    alignItems: "center"
+                                }}>
+                                <IconMaterial name="delete-circle" />
+                                <Text>     Delete All</Text>
+
+                                </View>
+                            </MenuOption>
                            
                         </MenuOptions>
                     </Menu>
@@ -273,6 +329,16 @@ export default class ViewDB extends Component {
         if (this.state.isLoading) {
             return (
                 <ActivityIndicator style={styles.loading} />
+            )
+        }
+
+        if (this.state.dbdata.length === 0) {
+            return (
+                <View style={styles.centeredItem}>
+                    <IconMaterial name="image-plus" size={Dimensions.get('window').width /2} color="#d8d8d8" />
+                    <Text style={{color:"#787878"}}> Database is empty.</Text>
+                </View>
+                
             )
         }
 
@@ -491,7 +557,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         top: 0,
         width: Dimensions.get('window').width / 5,
-        //backgroundColor: 'red',
+        // backgroundColor: 'red',
     },
 
     classify: {
