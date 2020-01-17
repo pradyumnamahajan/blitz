@@ -323,14 +323,6 @@ export default class ViewDB extends Component {
 
     }
 
-    test = async () => {
-        //let data = await RNFS.readDir(RNFS.DocumentDirectoryPath)
-        console.log(RNFS.ExternalDirectoryPath)
-        let data = await RNFS.readDir(RNFS.ExternalDirectoryPath)
-        console.log(data)
-        //console.log(ddata)
-    }
-
 
 
     render() {
