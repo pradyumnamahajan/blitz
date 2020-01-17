@@ -11,6 +11,7 @@ import CameraRollView from './screens/CameraRollView'
 
 import ViewDB from './screens/ViewDB'
 import ExportPage from './screens/ExportPage'
+import Maps from './screens/Maps'
 
 let displayHeader
 Platform.OS == 'ios' ? displayHeader = true : displayHeader = false
@@ -41,6 +42,10 @@ const AppNavigator = createStackNavigator({
   'Export': {
     screen: ExportPage,
   },
+
+  'Maps': {
+    screen: Maps,
+  }
 })
  
 

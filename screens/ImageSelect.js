@@ -166,15 +166,13 @@ export default class ImageSelect extends Component {
                 compressImageMaxHeight: 480,
                 avoidEmptySpaceAroundImage : false,
             }).then(image => {
-              console.log("image = "+image.data+ " "+image.path)
+            
               this.setState({
-                
-                
                 photo : image,
               });
             })
                 .catch(e => console.log(e));
-            console.log('gallery')
+
         }
     }
 
@@ -235,8 +233,6 @@ export default class ImageSelect extends Component {
 
   }
 
-  
-
   findCoordinates = async () => {
     try {
       if (Platform.OS == "android") {
@@ -264,7 +260,7 @@ export default class ImageSelect extends Component {
       return false
     }
 
-  };
+  }
 
   timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
