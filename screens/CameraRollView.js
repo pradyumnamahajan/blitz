@@ -17,6 +17,8 @@ import RNFS from 'react-native-fs'
 import Realm from 'realm'
 import Geolocation from '@react-native-community/geolocation';
 import cropSchema from './../storage/realm/cropSchema'
+import Icon from 'react-native-vector-icons/Entypo';
+
 
 class CameraRollView extends Component {
 
@@ -72,7 +74,7 @@ class CameraRollView extends Component {
         });
 
       console.log('camera')
-    } else {
+    } else if (this.state.selectedOption==='gallery'){
       ImagePicker.openPicker({
         cropping: true,
         width: 300,
@@ -97,10 +99,40 @@ class CameraRollView extends Component {
   }
 
   viewAllPhotos = () => {
-    this.setState({
+    this.setState(prevState => ({
       selectedOption: "gallery"
-    })
+    }))
     this.selectPhoto()
+  }
+
+  viewCamera = () => {
+    this.setState(prevState => ({
+      selectedOption: "camera"
+    }))
+    this.selectPhoto()
+  }
+
+  galleryImageSelect = (item) => {
+
+    try{
+      ImagePicker.openCropper({
+        path:item.uri,
+        width: 500,
+        height: 500,
+        freeStyleCropEnabled: true,
+        avoidEmptySpaceAroundImage: false,
+  
+      }).then( image => {
+        this.setState({
+          photo: image,
+          selected: true,
+        });
+      })
+
+    } catch (e) {
+      console.log('Error/ User cancelled galleryImageSelecy')
+    }
+    
   }
 
 
@@ -258,6 +290,9 @@ class CameraRollView extends Component {
 
 
     if (!this.state.selected) {
+
+      /* First Screen before image selection */
+
       return (
         <View style={{ flex: 1, backgroundColor: 'white' }}>
           <View style={{ height: Dimensions.get('window').width / 9 }}>
@@ -276,20 +311,53 @@ class CameraRollView extends Component {
             </View>
 
           </View>
-          <FlatList style={styles.container}
-            data={this.state.images}
-            renderItem={({ item }) => (
-              <TouchableOpacity>
-                <Image source={{ uri: item.uri }} style={styles.image} />
-              </TouchableOpacity>
-            )}
+          <View style={{ flex: 1, backgroundColor: 'white', height: Dimensions.get('window').width / 2.5 + Dimensions.get('window').width / 40}}>
+            <FlatList style={styles.container}
+              data={this.state.images}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => this.galleryImageSelect(item)}>
+                  <Image source={{ uri: item.uri }} style={styles.image} />
+                </TouchableOpacity>
+              )}
 
-            keyExtractor={item => item.uri}
-            horizontal={true}
-          />
+              keyExtractor={item => item.uri}
+              horizontal={true}
+            />
+          </View>
+          <View style={{ flex: 3 }}>
+            <View style={[styles.centeredItem, { flexDirection: 'row' }]}>
+              <TouchableOpacity onPress={this.viewCamera}>
+                <Icon name="camera" size={Dimensions.get('window').width / 4} />
+                <Text style={{ margin: 10, fontSize: Dimensions.get('window').width / 20 }}>
+                  Select image from camera
+                  </Text>
+
+              </TouchableOpacity>
+
+
+            </View>
+            <View style={[styles.centeredItem, { flexDirection: 'row' }]}>
+              <TouchableOpacity onPress={this.viewAllPhotos}>
+                <Icon name="images" size={Dimensions.get('window').width / 4} />
+                <Text style={{ margin: 10, fontSize: Dimensions.get('window').width / 20 }}>
+                  Select Image from Gallery
+                  </Text>
+
+              </TouchableOpacity>
+
+
+            </View>
+
+          </View>
+          
         </View>
       )
     } else {
+
+
+      /* Second Screen after image selection */
+
       return (
 
         <View style={{ height: Dimensions.get('window').height, width: Dimensions.get('window').width }}>
@@ -323,7 +391,8 @@ class CameraRollView extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
+    backgroundColor: 'white',
+    height: Dimensions.get('window').width / 2.5 + Dimensions.get('window').width / 40,
   },
   imageGrid: {
     flexDirection: 'row',
@@ -335,8 +404,6 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').width / 2.5,
     marginVertical: Dimensions.get('window').width / 40,
     marginLeft: Dimensions.get('window').width / 40,
-    // borderWidth:1,
-    // borderColor:'black',
     borderRadius: Dimensions.get('window').width / 30,
   },
   heading: {
@@ -350,7 +417,24 @@ const styles = StyleSheet.create({
     marginTop: Dimensions.get('window').width / 10 - (Dimensions.get('window').width / 40 + Dimensions.get('window').width / 25),
     marginRight: Dimensions.get('window').width / 40,
     color: "#23a0e8"
-  }
+  },
+  centeredItem: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  topItem: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+
+    bottomItem: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+
 });
 
 export default CameraRollView
