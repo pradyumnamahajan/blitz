@@ -12,6 +12,7 @@ import Mailer from 'react-native-mail';
 // import {  statusCodes,GoogleSigninButton } from '@react-native-community/google-signin';
 // import GoogleSignIn from 'react-native-google-sign-in';
 import Share from 'react-native-share';
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const { Parser } = require('json2csv');
 
@@ -249,17 +250,22 @@ class ExportPage extends Component{
      
     render(){
         return(
-            <View style = {styles.mainview}>
-                <View style = {styles.btnParentSection} >
-                    <Button title = "Export .csv to Mail" onPress = {()=>{
-                        this._exportPref()
-                    }}/>
-                      <Button
+
+                <View  style={styles.centeredItem}>
+                    {/* <Button title = "Export .csv to Mail" onPress = {()=>{ this._exportPref()}} style={styles.buttonText}/> */}
+
+                    <TouchableOpacity onPress = {()=>{ this._exportPref()}} style={styles.button}>
+                      <Text style={styles.buttonText}>
+                      Export .csv to Mail
+                      </Text>
+                    
+                    </TouchableOpacity>
+                      {/* <Button
                         title = 'Share'
                         onPress={this.shareCsv}
-                         />
+                         /> */}
                 </View>
-            </View>
+
         )
     }
 
@@ -278,6 +284,34 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop:10,
     },
+
+    button: {
+    
+      width: Dimensions.get('window').width/1.5,
+      height: Dimensions.get('window').width /10,
+      backgroundColor:'white',
+      borderRadius: 20,
+      justifyContent: "center",
+      margin: 5,
+      // borderWidth:2,
+      // borderColor:'black',
+      backgroundColor:'white'
+  
+    },
+  
+    buttonText: {
+      textAlign: 'center',
+      fontFamily: "Arial Rounded MT Bold",
+      color:"black",
+      fontWeight:'bold',
+     
+    },
+
+    centeredItem: {
+      flex:1,
+      justifyContent:'center',
+      alignItems:'center',
+    }
 })
 
 

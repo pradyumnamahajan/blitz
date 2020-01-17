@@ -16,6 +16,10 @@ import Maps from './screens/Maps'
 let displayHeader
 Platform.OS == 'ios' ? displayHeader = true : displayHeader = false
 console.log(displayHeader)
+
+console.disableYellowBox = true;
+
+
 const AppNavigator = createStackNavigator({
   Home: {
     screen: HomeScreen,
@@ -36,6 +40,9 @@ const AppNavigator = createStackNavigator({
 
   'Select Image': {
     screen: CameraRollView,
+    navigationOptions: {
+          headerShown: displayHeader,
+    },
     
   },
 
@@ -45,6 +52,9 @@ const AppNavigator = createStackNavigator({
 
   'Maps': {
     screen: Maps,
+    navigationOptions: {
+      headerShown: displayHeader,
+    },
   }
 })
  

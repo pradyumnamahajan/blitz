@@ -324,7 +324,7 @@ class CameraRollView extends Component {
             <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignContent: "center" }}>
 
               <Text style={styles.heading}>
-                Photos
+                Recent Photos
               </Text>
 
               <TouchableOpacity onPress={this.viewAllPhotos}>
@@ -351,23 +351,31 @@ class CameraRollView extends Component {
             />
           </View>
           <View style={{ flex: 3 }}>
-            <View style={[styles.centeredItem, { flexDirection: 'row' }]}>
+            <View style={[styles.centeredItem, {justifyContent:'flex-end'}]}>
               <TouchableOpacity onPress={this.viewCamera}>
-                <Icon name="camera" size={Dimensions.get('window').width / 4} />
+                <View style={styles.centeredItem}>
+                <Icon name="camera" size={Dimensions.get('window').width / 5} />
                 <Text style={{ margin: 10, fontSize: Dimensions.get('window').width / 20 }}>
                   Select image from camera
-                  </Text>
+                </Text>
+
+                </View>
+                
 
               </TouchableOpacity>
 
 
             </View>
-            <View style={[styles.centeredItem, { flexDirection: 'row' }]}>
+            <View style={[styles.centeredItem, {justifyContent:'flex-start'}]}>
               <TouchableOpacity onPress={this.viewAllPhotos}>
-                <Icon name="images" size={Dimensions.get('window').width / 4} />
+              <View style={styles.centeredItem}>
+                <Icon name="images" size={Dimensions.get('window').width / 5} />
+                
                 <Text style={{ margin: 10, fontSize: Dimensions.get('window').width / 20 }}>
                   Select Image from Gallery
-                  </Text>
+                </Text>
+                </View>
+
 
               </TouchableOpacity>
 
@@ -386,24 +394,31 @@ class CameraRollView extends Component {
       return (
 
         <View style={{ height: Dimensions.get('window').height, width: Dimensions.get('window').width }}>
+
           <View>
             <Image
               source={{ uri: this.state.photo.path }}
               style={{ height: Dimensions.get('window').width, width: Dimensions.get('window').width }}
               resizeMode="contain"
             />
-            <Text style={{ textAlign: 'center' }}>Preview</Text>
+            
           </View>
 
-          <TouchableOpacity onPress={this.handleUploadPhoto} style={styles.btnSection}  >
-            <Text style={styles.btnText}>Classify Now</Text>
-          </TouchableOpacity>
+          <View style={[styles.centeredItem, {justifyContent:"flex-start"}]}>
+            <TouchableOpacity onPress={this.handleUploadPhoto} style={styles.btnSection}  >
+              <Text style={styles.btnText}>Classify Now</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.addImgToDB} style={styles.btnSection}  >
-            <Text style={styles.btnText}>Save to DATABASE</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={this.addImgToDB} style={styles.btnSection}  >
+              <Text style={styles.btnText}>Save to Database</Text>
+            </TouchableOpacity>
 
+          </View>
 
+          {/* <View style={styles.centeredItem}>
+            
+          </View>
+           */}
         </View>
       )
 

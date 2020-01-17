@@ -93,10 +93,11 @@ export default class ViewDB extends Component {
     // {"classify": "Not classified", "data_added": 2020-01-13T19:02:15.572Z, "image_type": "image/jpeg", "image_uri": "file:///Users/manasimahajan/Library/Developer/CoreSimulator/Devices/0A43928B-D8CE-4E95-9DC2-E5589A4EE4B3/data/Containers/Data/Application/0359F365-4AA6-4D4D-B846-BAF538C3FA43/Documents/Realm_db/Images/185B0C6A-E3B0-446D-911A-AD99EB3F5668.jpg", "key": "1", "lat": "37.785834", "lon": "-122.406417"}
 
     static navigationOptions = ({ navigation }) => {
+        console.log("navigation "+navigation.navigate)
         return {
             headerRight: () => (
 
-
+                
 
 
                 <View style={{ padding: 15 }}>
@@ -133,7 +134,7 @@ export default class ViewDB extends Component {
 
 
                             </MenuOption>
-                            <MenuOption onSelect={navigation.getParam('test')}>
+                            {/* <MenuOption onSelect={navigation.getParam('export')}>
 
 
                                 <View style={{
@@ -147,7 +148,7 @@ export default class ViewDB extends Component {
                                     <Text>     Export</Text>
 
                                 </View>
-                            </MenuOption>
+                            </MenuOption> */}
 
                             <MenuOption onSelect={navigation.getParam('deleteAll')} >
 
@@ -647,11 +648,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
 
-        bottom: Dimensions.get('window').height / 9,
+        bottom: Dimensions.get('window').height / 8,
 
         width: Dimensions.get('window').width * 0.8,
         height: Dimensions.get('window').height / 10,
         backgroundColor: 'lightgray',
+        borderRadius: 10,
     },
 
 })
