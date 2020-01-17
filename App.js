@@ -10,6 +10,7 @@ import ImageSelect from './screens/ImageSelect.js'
 import CameraRollView from './screens/CameraRollView'
 
 import ViewDB from './screens/ViewDB'
+import ExportPage from './screens/ExportPage'
 
 let displayHeader
 Platform.OS == 'ios' ? displayHeader = true : displayHeader = false
@@ -25,16 +26,20 @@ const AppNavigator = createStackNavigator({
     screen: ViewDB,
     
   },
-  'Select Image': {
-    screen: ImageSelect,
-    navigationOptions: {
-      headerShown: displayHeader,
-    },
-  },
+  // 'Select Image': {
+  //   screen: ImageSelect,
+  //   navigationOptions: {
+  //     headerShown: displayHeader,
+  //   },
+  // },
 
-  Test: {
+  'Select Image': {
     screen: CameraRollView,
     
+  },
+
+  'Export': {
+    screen: ExportPage,
   },
 })
  

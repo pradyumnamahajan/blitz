@@ -190,6 +190,8 @@ PODS:
     - React
   - react-native-geolocation (2.0.2):
     - React
+  - react-native-mail (4.1.0):
+    - React
   - react-native-safe-area-context (0.6.2):
     - React
   - React-RCTActionSheet (0.61.5):
@@ -245,6 +247,8 @@ PODS:
     - React
   - RNScreens (2.0.0-alpha.22):
     - React
+  - RNShare (2.0.0):
+    - React
   - RNVectorIcons (6.6.0):
     - React
   - RSKImageCropper (2.2.3)
@@ -269,6 +273,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-cameraroll (from `../node_modules/@react-native-community/cameraroll`)"
   - "react-native-geolocation (from `../node_modules/@react-native-community/geolocation`)"
+  - react-native-mail (from `../node_modules/react-native-mail`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -288,6 +293,7 @@ DEPENDENCIES:
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNShare (from `../node_modules/react-native-share`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -331,6 +337,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/cameraroll"
   react-native-geolocation:
     :path: "../node_modules/@react-native-community/geolocation"
+  react-native-mail:
+    :path: "../node_modules/react-native-mail"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-RCTActionSheet:
@@ -367,6 +375,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNShare:
+    :path: "../node_modules/react-native-share"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -392,6 +402,7 @@ SPEC CHECKSUMS:
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-cameraroll: ad20f5a93c25cb83a76455df57a2c62fbb63aaed
   react-native-geolocation: cbd9d6bd06bac411eed2671810f454d4908484a8
+  react-native-mail: a864fb211feaa5845c6c478a3266de725afdce89
   react-native-safe-area-context: a1d322930b8c5d04ebeb77cc47cc97575ad27203
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
@@ -410,6 +421,7 @@ SPEC CHECKSUMS:
   RNImageCropPicker: 9d1a7eea4f8368fc479cbd2bf26459bd3c74d9aa
   RNReanimated: b2ab0b693dddd2339bd2f300e770f6302d2e960c
   RNScreens: 6adf01eb4080f44af6cca551207c6b0505066857
+  RNShare: 8b171d4b43c1d886917fdd303bf7a4b87167b05c
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   RSKImageCropper: a446db0e8444a036b34f3c43db01b2373baa4b2a
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
