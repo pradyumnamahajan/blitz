@@ -7,7 +7,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import HomeScreen from './screens/HomeScreen.js'
 
 import ImageSelect from './screens/ImageSelect.js'
-
+import CameraRollView from './screens/CameraRollView'
 
 import ViewDB from './screens/ViewDB'
 
@@ -18,20 +18,23 @@ const AppNavigator = createStackNavigator({
   Home: {
     screen: HomeScreen,
     navigationOptions: {
-      headerShown: displayHeader,
+      headerShown: false,
     }
   },
   Database: {
     screen: ViewDB,
-    // navigationOptions: {
-    //   headerShown: displayHeader,
-    // },
+    
   },
   'Select Image': {
     screen: ImageSelect,
     navigationOptions: {
       headerShown: displayHeader,
     },
+  },
+
+  Test: {
+    screen: CameraRollView,
+    
   },
 })
  
@@ -44,3 +47,6 @@ export default () => (
     <AppContainer />
   </MenuProvider>
 )
+
+
+

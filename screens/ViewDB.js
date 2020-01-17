@@ -85,6 +85,7 @@ export default class ViewDB extends Component {
 
         this.props.navigation.setParams({ 
             classifyAll: this.classifyAll, 
+            test: this.test,
         });
 
     }
@@ -130,7 +131,7 @@ export default class ViewDB extends Component {
                                 
 
                             </MenuOption>
-                            <MenuOption >
+                            <MenuOption onSelect={navigation.getParam('test')}>
 
 
                                 <View style={{
@@ -322,6 +323,14 @@ export default class ViewDB extends Component {
 
     }
 
+    test = async () => {
+        //let data = await RNFS.readDir(RNFS.DocumentDirectoryPath)
+        console.log(RNFS.ExternalDirectoryPath)
+        let data = await RNFS.readDir(RNFS.ExternalDirectoryPath)
+        console.log(data)
+        //console.log(ddata)
+    }
+
 
 
     render() {
@@ -369,6 +378,7 @@ export default class ViewDB extends Component {
                                     <Image
                                         style={styles.modalStyle}
                                         source={{ uri: this.state.modalObject.image_uri }}
+                                        
 
                                     />
 
@@ -405,7 +415,7 @@ export default class ViewDB extends Component {
                                     <View style={styles.rowStyleInner}>
                                         <Image
                                             style={styles.previewImage}
-                                            source={{ uri: rowData.item.image_uri }}
+                                            source={{ uri: rowData.item.image_uri }}                                            
                                         />
 
                                         <View style={styles.centeredItem}>

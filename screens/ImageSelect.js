@@ -1,6 +1,6 @@
 
 import React, { Fragment, Component } from 'react';
-import ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import {
   SafeAreaView,
   StyleSheet,
@@ -23,22 +23,6 @@ import Geolocation from '@react-native-community/geolocation';
 import cropSchema from './../storage/realm/cropSchema'
 
 
-const createFormData = (photo, body) => {
-  const data = new FormData();
-  console.log(photo.fileName);
-  data.append("photo", {
-    name: photo.fileName,
-    type: photo.type,
-    uri:
-      Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
-  });
-
-  Object.keys(body).forEach(key => {
-    data.append(key, body[key]);
-  });
-
-  return data;
-};
 
 
 const requestLocationPermission = async () => {
@@ -71,46 +55,136 @@ export default class ImageSelect extends Component {
       photo: '',
       prediction: null,
       location:null,
+      selectedOption : '',
     }
   }
 
-  chooseImage = () => {
-    let options = {
-      title: 'Select Image',
+  // chooseImage = () => {
+  //   let options = {
+  //     title: 'Select Image',
 
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
+  //     storageOptions: {
+  //       skipBackup: true,
+  //       path: 'images',
+  //     },
+  //   };
+  //   ImagePicker.showImagePicker(options, (response) => {
+  //     if (response.didCancel) {
+  //       console.log('User cancelled image picker');
+  //     }
+
+  //     else if (response.customButton) {
+  //       console.log('User tapped custom button: ', response.customButton);
+  //       alert(response.customButton);
+  //     } else {
+  //       const source = { uri: response.uri };
+  //       this.setState({
+  //         photo: response,
+  //       });
+
+  //       console.log(this.state.photo.uri);
+
+  //     }
+  //   });
+  // }
+
+      // this function helps user choose between camera and gallery , call this on 'choose file' button
+      SelectImages = () => {
+        Alert.alert(
+         'Options',
+         'Choose Image from...',
+          [
+            {
+              text: 'Camera' ,
+              onPress : ()=>{
+                console.log('camera selected')
+                this.setState({
+                  selectedOption: 'camera'
+                })
+                this.selectPhoto();
+              }
+            },
+            {
+              text: 'Storage' ,
+              onPress : ()=>{
+                console.log('storage selected')
+                this.setState({
+                  selectedOption: 'storage'
+                })
+                this.selectPhoto();
+              }
+            }
+          ],
+          {cancelable:true}
+       )
+  
+       
       }
+      
+  
+  
+  
+  
+      // this function selects the photo
+  
+      selectPhoto() {
+        if (this.state.selectedOption === 'camera') {
+            ImagePicker.openCamera({
+                cropping: true,
+                width: 500,
+                height: 500,
+                //cropperCircleOverlay: true,
+                compressImageMaxWidth: 640,
+                compressImageMaxHeight: 480,
+                freeStyleCropEnabled: true,
+                includeBase64: true
+            }).then(image => {
+              console.log("imagetype, path = "+image.mime+"  "+image.path)
 
-      else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-        alert(response.customButton);
-      } else {
-        const source = { uri: response.uri };
-        this.setState({
-          photo: response,
-        });
-
-        console.log(this.state.photo.uri);
-
-      }
-    });
-  }
-
+              this.setState({
+                
+                fileData: image.data,
+                fileUri: image.path,
+                photo : image,
+              });
+            })
+                .catch(e => {
+                    console.log(e), this.setState({imageModalVisible: false})
+                });
+    
+            console.log('camera')
+        } else {
+            ImagePicker.openPicker({
+                cropping: true,
+                width: 300,
+                height: 400,
+                //cropperCircleOverlay: true,
+                freeStyleCropEnabled: true,
+                avoidEmptySpaceAroundImage: true,
+                includeBase64: true,
+                compressImageMaxWidth: 640,
+                compressImageMaxHeight: 480,
+                avoidEmptySpaceAroundImage : false,
+            }).then(image => {
+              console.log("image = "+image.data+ " "+image.path)
+              this.setState({
+                
+                
+                photo : image,
+              });
+            })
+                .catch(e => console.log(e));
+            console.log('gallery')
+        }
+    }
 
 
 
   renderFileUri = () => {
 
-    if (this.state.photo.uri) {
+    if (this.state.photo.path) {
       return <Image
-        source={{ uri: this.state.photo.uri }}
+        source={{ uri: this.state.photo.path }}
         style={styles.images}
       />
     } else {
@@ -125,8 +199,8 @@ export default class ImageSelect extends Component {
 
     try {
       var photo = {
-        type: this.state.photo.type,
-        uri: this.state.photo.uri,
+        type: this.state.photo.mime,
+        uri: this.state.photo.path,
         name: 'uploadImage.png',
       };
 
@@ -204,16 +278,16 @@ export default class ImageSelect extends Component {
 
       
 
-      let datauri = (this.state.photo.uri).split('/');
+      let datauri = (this.state.photo.path).split('/');
       const imageinfo = datauri[datauri.length - 1];
 
       try {
         await RNFS.mkdir(RNFS.DocumentDirectoryPath + '/Realm_db/Images/');
         await RNFS.mkdir(RNFS.DocumentDirectoryPath + '/Realm_db/Database/');
-        await RNFS.copyFile(this.state.photo.uri, RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo);
+        await RNFS.copyFile(this.state.photo.path, RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo);
 
 
-        console.log(this.state.photo.uri);
+        console.log(this.state.photo.path);
       } catch (e) {
         console.log(e);
         console.log('Error in addImgToDB');
@@ -243,7 +317,7 @@ export default class ImageSelect extends Component {
         realm.create('Crop', {
 
           image_uri: 'file://' + RNFS.DocumentDirectoryPath + '/Realm_db/Images/' + imageinfo,
-          image_type: this.state.photo.type,
+          image_type: this.state.photo.mime,
           data_added: new Date(),
           classify: prediction,
           lat: x,
@@ -279,6 +353,8 @@ export default class ImageSelect extends Component {
       <Fragment>
         <StatusBar barStyle="dark-content" />
         <SafeAreaView>
+
+          
           <View style={styles.body}>
             <Text style={{ textAlign: 'center', fontSize: 15, paddingBottom: 10 }} >Pick Image from Camera / Gallery</Text>
             <View style={styles.ImageSections}>
@@ -290,7 +366,7 @@ export default class ImageSelect extends Component {
             </View>
 
             <View style={styles.btnParentSection}>
-              <TouchableOpacity onPress={this.chooseImage} style={styles.btnSection}  >
+              <TouchableOpacity onPress={this.SelectImages} style={styles.btnSection}  >
                 <Text style={styles.btnText}>Choose File</Text>
               </TouchableOpacity>
 

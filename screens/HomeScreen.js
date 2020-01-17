@@ -9,7 +9,7 @@ export default class HomeScreen extends Component{
     return(
 
       ///<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <ImageBackground source={require('./../assets/crop.png')} style={styles.backgroundImage} blurRadius={3} imageStyle={{ opacity: 0.8 }} >
+      <ImageBackground source={require('./../assets/crop.png')} style={styles.backgroundImage} blurRadius={3} imageStyle={{ opacity: 0.6 }} >
         <View style={{flex:2,     justifyContent: 'center'}}>
           <Text style={styles.title}>CropDex</Text>
         </View>
@@ -17,12 +17,17 @@ export default class HomeScreen extends Component{
         <View style={{flex:1}}>
           <TouchableOpacity onPress={this.chooseImage} style={styles.button}
             onPress={() => this.props.navigation.navigate('Database')}>
-            <Text style={styles.buttonText}>Database</Text>
+            <Text style={styles.buttonText}>View Database</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.chooseImage} style={styles.button}
             onPress={() => this.props.navigation.navigate('Select Image')}>
-            <Text style={styles.buttonText}>Gallery</Text>
+            <Text style={styles.buttonText}>Select Image</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.chooseImage} style={styles.button}
+            onPress={() => this.props.navigation.navigate('Test')}>
+            <Text style={styles.buttonText}>Test</Text>
           </TouchableOpacity>
 
         </View>
@@ -49,8 +54,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     margin: 5,
-    borderWidth:2,
-    borderColor:'black',
+    // borderWidth:2,
+    // borderColor:'black',
     backgroundColor:'white'
 
   },
@@ -65,8 +70,15 @@ const styles = StyleSheet.create({
 
   title: {
     fontFamily: "Arial Rounded MT Bold",
-    fontSize: Dimensions.get('window').width /10,
-    color:'white'
+    fontSize: Dimensions.get('window').width /7.5,
+    color:'white',
+    textShadowRadius:0,
+    shadowOpacity:0.3,
+    
+    textShadowColor:'black',
+    // borderColor:'black',
+    // borderWidth:1,
+
   }
 
 })
