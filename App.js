@@ -6,7 +6,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { MenuProvider } from 'react-native-popup-menu';
 import HomeScreen from './screens/HomeScreen.js'
 
-import ImageSelect from './screens/ImageSelect.js'
+// import ImageSelect from './screens/ImageSelect.js'
 import CameraRollView from './screens/CameraRollView'
 
 import ViewDB from './screens/ViewDB'

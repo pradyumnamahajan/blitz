@@ -7,11 +7,13 @@ import {
   View,
   Text,
   FlatList,
-  Dimensions
+  Dimensions,
+  TouchableOpacity,
+  PermissionsAndroid
 } from 'react-native';
 
 import CameraRoll from "@react-native-community/cameraroll"
-import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
+// import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs'
 import Realm from 'realm'
@@ -19,6 +21,29 @@ import Geolocation from '@react-native-community/geolocation';
 import cropSchema from './../storage/realm/cropSchema'
 import Icon from 'react-native-vector-icons/Entypo';
 
+
+const requestLocationPermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Location Permission',
+        message:
+          'Cropdex needs to access your Location',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('Permission granted');
+    } else {
+      console.log('permission denied');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+}
 
 class CameraRollView extends Component {
 
@@ -50,8 +75,8 @@ class CameraRollView extends Component {
 
   }
 
-  selectPhoto() {
-    if (this.state.selectedOption === 'camera') {
+  selectPhoto(selectedOption) {
+    if (selectedOption === 'camera') {
       ImagePicker.openCamera({
         cropping: true,
         width: 500,
@@ -74,7 +99,7 @@ class CameraRollView extends Component {
         });
 
       console.log('camera')
-    } else if (this.state.selectedOption==='gallery'){
+    } else if (selectedOption==='gallery'){
       ImagePicker.openPicker({
         cropping: true,
         width: 300,
@@ -99,17 +124,17 @@ class CameraRollView extends Component {
   }
 
   viewAllPhotos = () => {
-    this.setState(prevState => ({
-      selectedOption: "gallery"
-    }))
-    this.selectPhoto()
+    // this.setState(prevState => ({
+    //   selectedOption: 
+    // }))
+    this.selectPhoto("gallery")
   }
 
   viewCamera = () => {
-    this.setState(prevState => ({
-      selectedOption: "camera"
-    }))
-    this.selectPhoto()
+    // this.setState(prevState => ({
+    //   selectedOption: "camera"
+    // }))
+    this.selectPhoto("camera")
   }
 
   galleryImageSelect = (item) => {
@@ -433,6 +458,21 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
+    },
+    btnSection: {
+      width: 225,
+      height: 50,
+      backgroundColor: 'powderblue',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 3,
+      marginBottom: 10
+    },
+    btnText: {
+      textAlign: 'center',
+      color: 'gray',
+      fontSize: 14,
+      fontWeight: 'bold'
     },
 
 });

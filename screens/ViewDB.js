@@ -12,6 +12,7 @@ import {
     Button,
     SafeAreaView,
     TouchableHighlight,
+    Alert,
 } from 'react-native'
 
 import RNFS from 'react-native-fs'
@@ -33,7 +34,7 @@ import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 
-    
+
 
 
 
@@ -51,13 +52,13 @@ export default class ViewDB extends Component {
                 visibile: false,
                 modalMessage: "",
             },
-            count:0,
+            count: 0,
         }
     }
 
     //Loads images from database
-    
-    
+
+
 
     componentDidMount = async () => {
         let realm = await Realm.open({
@@ -83,9 +84,9 @@ export default class ViewDB extends Component {
             isLoading: false
         }));
 
-        this.props.navigation.setParams({ 
-            classifyAll: this.classifyAll, 
-            test: this.test,
+        this.props.navigation.setParams({
+            classifyAll: this.classifyAll,
+            deleteAll: this.deleteAll,
         });
 
     }
@@ -95,22 +96,23 @@ export default class ViewDB extends Component {
         return {
             headerRight: () => (
 
-      
 
 
-                <View style={{padding: 15}}>
+
+                <View style={{ padding: 15 }}>
 
 
 
                     <Menu>
                         <MenuTrigger >
                             <View style={{
-                                paddingHorizontal:10,
+                                paddingHorizontal: 10,
+                                borderRadius:10,
                             }}
                             >
-                                <Icon name="dots-three-vertical" color="black" />
+                                <Icon name="dots-three-vertical" size={Dimensions.get('window').width /30} color="black" />
                             </View>
-                            
+
                         </MenuTrigger>
                         <MenuOptions>
 
@@ -122,13 +124,13 @@ export default class ViewDB extends Component {
                                     justifyContent: "flex-start",
                                     alignItems: "center"
                                 }}>
-                                <Icon name="leaf" />
-                                <Text>     Classify All</Text>
+                                    <Icon name="leaf" size={Dimensions.get('window').width /20}/>
+                                    <Text>     Classify All</Text>
 
                                 </View>
 
 
-                                
+
 
                             </MenuOption>
                             <MenuOption onSelect={navigation.getParam('test')}>
@@ -141,13 +143,13 @@ export default class ViewDB extends Component {
                                     justifyContent: "flex-start",
                                     alignItems: "center"
                                 }}>
-                                <IconMaterial name="database-export" />
-                                <Text>     Export</Text>
+                                    <IconMaterial name="database-export" size={Dimensions.get('window').width /20} />
+                                    <Text>     Export</Text>
 
                                 </View>
                             </MenuOption>
 
-                            <MenuOption >
+                            <MenuOption onSelect={navigation.getParam('deleteAll')} >
 
 
                                 <View style={{
@@ -157,12 +159,12 @@ export default class ViewDB extends Component {
                                     justifyContent: "flex-start",
                                     alignItems: "center"
                                 }}>
-                                <IconMaterial name="delete-outline" />
-                                <Text>     Delete All</Text>
+                                    <IconMaterial name="delete-outline" size={Dimensions.get('window').width /20} />
+                                    <Text>     Delete All</Text>
 
                                 </View>
                             </MenuOption>
-                           
+
                         </MenuOptions>
                     </Menu>
 
@@ -176,6 +178,7 @@ export default class ViewDB extends Component {
 
 
     }
+
 
 
 
@@ -219,6 +222,32 @@ export default class ViewDB extends Component {
 
     }
 
+    deleteAll = async () => {
+
+        Alert.alert(
+            'Delete All?',
+            'Do you want to delete all items?',
+            [
+              {text: 'Yes', onPress: async () => {
+                await Realm.open({
+                    path: RNFS.DocumentDirectoryPath + '/Realm_db/Database/Crops.realm',
+                    schema: [cropSchema]
+                }).then(realm => { 
+                    realm.write(() => { realm.deleteAll() }) 
+                    console.log('Deleted All')
+                    this.componentDidMount()
+                });
+              }},
+            
+              {text: 'No', onPress: () => console.log('No Pressed')},
+            ],
+            {cancelable: false},
+          );
+
+          
+
+        
+    }
 
     updateDB = async (item, prediction) => {
         console.log("Updating DB")
@@ -290,7 +319,7 @@ export default class ViewDB extends Component {
     classifyAll = async () => {
 
         console.log('Classfying')
-        
+
         const todo = []
 
         for (let index = 0; index < this.state.dbdata.length; index++) {
@@ -336,10 +365,10 @@ export default class ViewDB extends Component {
         if (this.state.dbdata.length === 0) {
             return (
                 <View style={styles.centeredItem}>
-                    <IconMaterial name="image-plus" size={Dimensions.get('window').width /2} color="#d8d8d8" />
-                    <Text style={{color:"#787878"}}> Database is empty.</Text>
+                    <IconMaterial name="image-plus" size={Dimensions.get('window').width / 2} color="#d8d8d8" />
+                    <Text style={{ color: "#787878" }}> Database is empty.</Text>
                 </View>
-                
+
             )
         }
 
@@ -370,7 +399,7 @@ export default class ViewDB extends Component {
                                     <Image
                                         style={styles.modalStyle}
                                         source={{ uri: this.state.modalObject.image_uri }}
-                                        
+
 
                                     />
 
@@ -407,7 +436,7 @@ export default class ViewDB extends Component {
                                     <View style={styles.rowStyleInner}>
                                         <Image
                                             style={styles.previewImage}
-                                            source={{ uri: rowData.item.image_uri }}                                            
+                                            source={{ uri: rowData.item.image_uri }}
                                         />
 
                                         <View style={styles.centeredItem}>
@@ -418,7 +447,7 @@ export default class ViewDB extends Component {
 
                                     </View>
 
-                                    
+
 
 
                                 </View>
@@ -439,15 +468,15 @@ export default class ViewDB extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.handleClassifyPhoto(rowData.item)}
                                 >
-                                    
+
                                     <View style={styles.bottomItem} >
                                         <Icon name="leaf" size={Dimensions.get('window').width / 15} color='black' />
                                     </View>
                                     <View style={styles.topItem} >
                                         <Text>Classify</Text>
                                     </View>
-                                    
-                                    
+
+
                                 </TouchableOpacity>
                             </View>
 
@@ -462,8 +491,8 @@ export default class ViewDB extends Component {
                                     <View style={styles.topItem} >
                                         <Text>Delete</Text>
                                     </View>
-                                    
-                                    
+
+
                                 </TouchableOpacity>
                             </View>
 
@@ -482,9 +511,9 @@ export default class ViewDB extends Component {
                     previewOpenDelay={2000}
                 />
 
-                
+
                 {/* ProgressModal */}
-                <View style={[styles.centeredItem, this.state.progressModal.visibile ? { } : { display: "none" }]}>
+                <View style={[styles.centeredItem, this.state.progressModal.visibile ? {} : { display: "none" }]}>
                     <View style={styles.loadingModal}>
 
                         <Text>{this.state.progressModal.modalMessage}</Text>
@@ -522,10 +551,10 @@ const styles = StyleSheet.create({
         // borderBottomColor: 'lightgray',
         // borderBottomWidth: 1,
         paddingBottom: 1,
-        backgroundColor:"#f2f2f2",
+        backgroundColor: "#f2f2f2",
 
-        
-        
+
+
     },
 
     rowStyleInner: {
@@ -536,12 +565,12 @@ const styles = StyleSheet.create({
         borderBottomColor: 'lightgray',
         borderBottomWidth: 1,
         paddingBottom: 1,
-        marginTop:10,
+        marginTop: 10,
         marginHorizontal: 10,
-        
+
     },
 
-   
+
 
     previewImage: {
         flex: 1,
@@ -589,7 +618,7 @@ const styles = StyleSheet.create({
         top: 0,
         width: Dimensions.get('window').width / 5,
         flex: 1,
-        textAlign:'center'
+        textAlign: 'center'
 
     },
 
