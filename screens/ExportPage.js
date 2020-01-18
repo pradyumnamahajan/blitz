@@ -24,6 +24,7 @@ class ExportPage extends Component{
            accessToken : '',
            uri : '',
            cloud_url : '',
+           message: '',
         }
     }
 
@@ -51,6 +52,10 @@ class ExportPage extends Component{
                 uri : x.image_uri,
                 cloud_url : '',
               })
+
+              this.setState({
+                message: "Backing up image number "+ id.toString()
+              })
               let a = await this.handleUploadPhoto()
               
               await this.timeout(5000)
@@ -64,6 +69,10 @@ class ExportPage extends Component{
            
            }
            console.log(fjson)
+
+           this.setState({
+             message:'Uploading Done'
+           })
            
            //const labels = ['classify','data_added','image_uri','lat','lon'];
            const fields = [{
@@ -92,6 +101,10 @@ class ExportPage extends Component{
          ];
            
  
+            this.setState({
+              message: 'Making CSV'
+            })
+
            const json2csvparser = new Parser({fields})
            const csv = json2csvparser.parse(fjson);
            console.log(csv);
@@ -103,6 +116,7 @@ class ExportPage extends Component{
                  csv_url : RNFS.ExternalDirectoryPath+'/Name_'+datetime+'.csv'
              });
              console.log(this.state.csv_url);
+
              await this.timeout(1000)
              this.handleEmail();
            }).catch((err) => {
@@ -115,6 +129,7 @@ class ExportPage extends Component{
     
      handleEmail = () => {
         var currentdate = new Date();
+
         Mailer.mail({
           subject: 'CSV database file',
           recipients: [],//'siddheshsovitkar@gmail.com','prad.greatt@gmail.com'
@@ -138,6 +153,10 @@ class ExportPage extends Component{
             { cancelable: true }
           )
         });
+
+        this.setState({
+          message:""
+        })
       }
 
       // open_db = async () => {
@@ -260,6 +279,10 @@ class ExportPage extends Component{
                       </Text>
                     
                     </TouchableOpacity>
+
+                    <Text>
+                      {this.state.message}
+                    </Text>
                       {/* <Button
                         title = 'Share'
                         onPress={this.shareCsv}

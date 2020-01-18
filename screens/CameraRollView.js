@@ -240,7 +240,7 @@ class CameraRollView extends Component {
     try {
       await this.findCoordinates()
 
-      await this.timeout(1000)
+      await this.timeout(3000)
 
 
 

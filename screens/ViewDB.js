@@ -53,6 +53,7 @@ export default class ViewDB extends Component {
                 modalMessage: "",
             },
             count: 0,
+            
         }
     }
 
@@ -186,6 +187,14 @@ export default class ViewDB extends Component {
     handleClassifyPhoto = async (item) => {
 
         try {
+
+            this.setState(prevState => ({
+                progressModal: {
+                    visibile: true,
+                    modalMessage: "Classifying ...",
+                }
+            }))
+
             var photo = {
                 type: item.image_type,
                 uri: item.image_uri,
@@ -212,6 +221,13 @@ export default class ViewDB extends Component {
             let responseJSON = await response.json()
             console.log(responseJSON)
             let prediction = responseJSON.result.toString()
+
+            this.setState(prevState => ({
+                progressModal: {
+                    visibile: false,
+                    modalMessage: "",
+                }
+            }))
 
 
             await this.updateDB(item, prediction)
@@ -335,7 +351,7 @@ export default class ViewDB extends Component {
             this.setState(prevState => ({
                 progressModal: {
                     visibile: true,
-                    modalMessage: `${index + 1}/${todo.length}`,
+                    modalMessage: `Classifying image - ${index + 1}/${todo.length}`,
                 }
             }))
             await this.handleClassifyPhoto(item)
