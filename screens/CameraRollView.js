@@ -175,6 +175,7 @@ class CameraRollView extends Component {
       formData.append('submit', 'ok');
       formData.append('file', photo);
 
+      console.log('sending Request')
       let response = await fetch("https://blitz-crop-app.appspot.com/analyze", {
         method: "POST",
         headers: {
@@ -183,6 +184,7 @@ class CameraRollView extends Component {
         body: formData,
       })
 
+      console.log('received data')
 
 
       let responseJSON = await response.json()
@@ -356,7 +358,7 @@ class CameraRollView extends Component {
                 <View style={styles.centeredItem}>
                 <Icon name="camera" size={Dimensions.get('window').width / 5} />
                 <Text style={{ margin: 10, fontSize: Dimensions.get('window').width / 20 }}>
-                  Select image from camera
+                  Capture image from camera
                 </Text>
 
                 </View>
@@ -404,13 +406,13 @@ class CameraRollView extends Component {
             
           </View>
 
-          <View style={[styles.centeredItem, {justifyContent:"flex-start"}]}>
-            <TouchableOpacity onPress={this.handleUploadPhoto} style={styles.btnSection}  >
-              <Text style={styles.btnText}>Classify Now</Text>
+          <View style={[styles.centeredItem, {justifyContent:"flex-start", marginTop:20}]}>
+            <TouchableOpacity onPress={this.handleUploadPhoto} style={styles.button}  >
+              <Text style={styles.buttonText}>Classify Now</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={this.addImgToDB} style={styles.btnSection}  >
-              <Text style={styles.btnText}>Save to Database</Text>
+            <TouchableOpacity onPress={this.addImgToDB} style={styles.button}  >
+              <Text style={styles.buttonText}>Classify Later</Text>
             </TouchableOpacity>
 
           </View>
@@ -488,6 +490,27 @@ const styles = StyleSheet.create({
       color: 'gray',
       fontSize: 14,
       fontWeight: 'bold'
+    },
+    button: {
+    
+      width: Dimensions.get('window').width/1.5,
+      height: Dimensions.get('window').width /10,
+      backgroundColor:'white',
+      borderRadius: 20,
+      justifyContent: "center",
+      margin: 5,
+      // borderWidth:2,
+      // borderColor:'black',
+      backgroundColor:'white'
+  
+    },
+  
+    buttonText: {
+      textAlign: 'center',
+      fontFamily: "Arial Rounded MT Bold",
+      color:"black",
+      fontWeight:'bold',
+     
     },
 
 });

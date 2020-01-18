@@ -522,6 +522,10 @@ export default class ViewDB extends Component {
                     </View>
                 </View>
 
+                <View style={{height:80, width:Dimensions.get('window').width}}>
+                    <Text>_</Text>
+                </View>
+
 
 
 

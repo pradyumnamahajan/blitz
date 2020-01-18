@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, Button, FlatList, Image, ActivityIndicator, Dimensions, StyleSheet, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, Dimensions, StyleSheet, Alert } from 'react-native'
 import RNFS from 'react-native-fs'
 import Realm from 'realm'
 import cropSchema from './../storage/realm/cropSchema'
@@ -11,8 +11,8 @@ import Mailer from 'react-native-mail';
 // import GDrive from 'react-native-google-drive-api-wrapper';
 // import {  statusCodes,GoogleSigninButton } from '@react-native-community/google-signin';
 // import GoogleSignIn from 'react-native-google-sign-in';
-import Share from 'react-native-share';
-import { TouchableOpacity } from 'react-native-gesture-handler'
+//import Share from 'react-native-share';
+// import { TouchableOpacity  } from 'react-native-gesture-handler'
 
 const { Parser } = require('json2csv');
 
@@ -117,7 +117,7 @@ class ExportPage extends Component{
         var currentdate = new Date();
         Mailer.mail({
           subject: 'CSV database file',
-          recipients: ['siddheshsovitkar@gmail.com','prad.greatt@gmail.com'],
+          recipients: [],//'siddheshsovitkar@gmail.com','prad.greatt@gmail.com'
           ccRecipients: [],
           bccRecipients: [],
           body: '<b>This is a system generated mail containing your exported database .csv file, please dont reply to this mail.</b>',
@@ -140,16 +140,16 @@ class ExportPage extends Component{
         });
       }
 
-      open_db = async () => {
-          let a = await Realm.open({
-              path: RNFS.DocumentDirectoryPath + '/Realm_db/Database/Crops.realm',
-              schema: [cropSchema]
-          }).then((realm) =>{
-           let data = realm.objects('Crop')
-           console.log(data)
+      // open_db = async () => {
+      //     let a = await Realm.open({
+      //         path: RNFS.DocumentDirectoryPath + '/Realm_db/Database/Crops.realm',
+      //         schema: [cropSchema]
+      //     }).then((realm) =>{
+      //      let data = realm.objects('Crop')
+      //      console.log(data)
            
-          })
-      }
+      //     })
+      // }
 
 
 
@@ -175,7 +175,7 @@ class ExportPage extends Component{
   
         console.log("formdata = " + formData);
   
-        fetch("http://192.168.1.220:3000/upload", {
+        fetch("http://192.168.43.12:3000/upload", { //192.168.43.12 192.168.43.12
           method: "POST",
           headers: {
             'Accept': 'application/json',
@@ -197,21 +197,21 @@ class ExportPage extends Component{
       };
 
 
-      shareCsv = () => {
-        let t = "file://"+ this.state.csv_url
-        const options = {
-          url : t,
-          type : 'csv',
-          email : 'siddheshsovitkar@gmail.com',
-          showAppsToView : true,
-          message : 'Share .csv',
-          filename : 'data.csv '
-        }
-        Share.open(options)
-        .then((res) => { console.log(res) })
-        .catch((err) => { err && console.log(err); });
+      // shareCsv = () => {
+      //   let t = "file://"+ this.state.csv_url
+      //   const options = {
+      //     url : t,
+      //     type : 'csv',
+      //     email : 'siddheshsovitkar@gmail.com',
+      //     showAppsToView : true,
+      //     message : 'Share .csv',
+      //     filename : 'data.csv '
+      //   }
+      //   Share.open(options)
+      //   .then((res) => { console.log(res) })
+      //   .catch((err) => { err && console.log(err); });
 
-      }
+      // }
       /*signIn = async () => {
        
         

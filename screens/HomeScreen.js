@@ -31,8 +31,8 @@ export default class HomeScreen extends Component{
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.chooseImage} style={styles.button}
-            onPress={() => this.props.navigation.navigate('Maps')}>
-            <Text style={styles.buttonText}>Map</Text>
+            onPress={() => this.props.navigation.navigate('Map')}>
+            <Text style={styles.buttonText}>View Map</Text>
           </TouchableOpacity>
 
         </View>

@@ -64,7 +64,7 @@ class Maps extends Component {
         let y = {
           latitude: x.lat,
           longitude: x.lon,
-          des: "id : " + id + "\nCrop Name : " + x.classify + "\nCaptured on " + date + " \nat " + time + "hrs",
+          des: "id : " + id + "\nCrop Name : " + x.classify + "\nCaptured on " + date
         }
         fjson.push(y)
         id++

@@ -50,7 +50,7 @@ const AppNavigator = createStackNavigator({
     screen: ExportPage,
   },
 
-  'Maps': {
+  'Map': {
     screen: Maps,
     navigationOptions: {
       headerShown: displayHeader,
