@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet, ImageBackground, PermissionsAndroid } from 'react-native';
-// import { createAppContainer } from 'react-navigation';
-// import { createStackNavigator } from 'react-navigation-stack';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import Realm from 'realm'
 import cropSchema from './../storage/realm/cropSchema'
@@ -110,7 +108,6 @@ class Maps extends Component {
 
       },
       error => Alert.alert(error.message),
-      //{ enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
   }
 
@@ -121,9 +118,6 @@ class Maps extends Component {
 
 
   }
-
-
-
 
   render() {
     if (this.state.location != null) {
@@ -185,9 +179,6 @@ class Maps extends Component {
       )
     }
 
-
-
-
   }
 }
 
@@ -199,4 +190,3 @@ const styles = StyleSheet.create({
 });
 
 export default Maps;
-

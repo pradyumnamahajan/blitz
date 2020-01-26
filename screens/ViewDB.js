@@ -31,14 +31,6 @@ import Icon from 'react-native-vector-icons/Entypo';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
-
-
-
-
-
-
-
-
 export default class ViewDB extends Component {
 
     constructor(props) {
@@ -57,19 +49,11 @@ export default class ViewDB extends Component {
         }
     }
 
-    //Loads images from database
-
-
-
     componentDidMount = async () => {
         let realm = await Realm.open({
             path: RNFS.DocumentDirectoryPath + '/Realm_db/Database/Crops.realm',
             schema: [cropSchema]
         })
-
-
-        //Added this part in component did mount instead of render, 
-        //might have to add componentDid Update in case of bugs
 
         let image_data_array = []
         let p = 0
@@ -91,19 +75,14 @@ export default class ViewDB extends Component {
         });
 
     }
-    // {"classify": "Not classified", "data_added": 2020-01-13T19:02:15.572Z, "image_type": "image/jpeg", "image_uri": "file:///Users/manasimahajan/Library/Developer/CoreSimulator/Devices/0A43928B-D8CE-4E95-9DC2-E5589A4EE4B3/data/Containers/Data/Application/0359F365-4AA6-4D4D-B846-BAF538C3FA43/Documents/Realm_db/Images/185B0C6A-E3B0-446D-911A-AD99EB3F5668.jpg", "key": "1", "lat": "37.785834", "lon": "-122.406417"}
+
 
     static navigationOptions = ({ navigation }) => {
         console.log("navigation "+navigation.navigate)
         return {
             headerRight: () => (
 
-                
-
-
                 <View style={{ padding: 15 }}>
-
-
 
                     <Menu>
                         <MenuTrigger >
@@ -131,10 +110,9 @@ export default class ViewDB extends Component {
 
                                 </View>
 
-
-
-
                             </MenuOption>
+
+
                             {/* <MenuOption onSelect={navigation.getParam('export')}>
 
 
@@ -166,23 +144,15 @@ export default class ViewDB extends Component {
 
                                 </View>
                             </MenuOption>
-
                         </MenuOptions>
                     </Menu>
-
                 </View>
-
 
             )
 
         }
 
-
-
     }
-
-
-
 
     handleClassifyPhoto = async (item) => {
 
@@ -286,7 +256,6 @@ export default class ViewDB extends Component {
         })
 
         console.log("Done")
-        //Not very proud of this line, but it works
         this.componentDidMount()
         return true
 
@@ -369,8 +338,6 @@ export default class ViewDB extends Component {
 
     }
 
-
-
     render() {
 
         if (this.state.isLoading) {
@@ -392,9 +359,6 @@ export default class ViewDB extends Component {
         return (
 
             <SafeAreaView style={{ height: Dimensions.get('window').height }}>
-
-
-
 
                 <SwipeListView
                     useFlatList={true}
@@ -445,36 +409,21 @@ export default class ViewDB extends Component {
 
                             </Modal>
 
-
-
                             <TouchableHighlight onPress={() => this.toggleModal(rowData.item)}>
-
                                 <View style={styles.rowStyle}>
                                     <View style={styles.rowStyleInner}>
                                         <Image
                                             style={styles.previewImage}
                                             source={{ uri: rowData.item.image_uri }}
                                         />
-
                                         <View style={styles.centeredItem}>
                                             <Text>
                                                 {rowData.item.classify}
                                             </Text>
                                         </View>
-
                                     </View>
-
-
-
-
                                 </View>
-
-
-
                             </TouchableHighlight>
-
-
-
                         </React.Fragment>
                     )}
 
@@ -519,17 +468,12 @@ export default class ViewDB extends Component {
                     )}
 
                     disableRightSwipe={true}
-
                     rightOpenValue={-2 * Dimensions.get('window').width / 5}
                     previewRowKey={'0'}
                     previewOpenValue={-Dimensions.get('window').width / 10}
-
-
                     previewOpenDelay={2000}
                 />
 
-
-                {/* ProgressModal */}
                 <View style={[styles.centeredItem, this.state.progressModal.visibile ? {} : { display: "none" }]}>
                     <View style={styles.loadingModal}>
 
@@ -541,11 +485,6 @@ export default class ViewDB extends Component {
                 <View style={{height:80, width:Dimensions.get('window').width}}>
                     <Text>_</Text>
                 </View>
-
-
-
-
-
 
             </SafeAreaView>
 
@@ -569,13 +508,8 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         backgroundColor: 'white',
-        // borderBottomColor: 'lightgray',
-        // borderBottomWidth: 1,
         paddingBottom: 1,
         backgroundColor: "#f2f2f2",
-
-
-
     },
 
     rowStyleInner: {
@@ -590,8 +524,6 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
 
     },
-
-
 
     previewImage: {
         flex: 1,
@@ -627,7 +559,6 @@ const styles = StyleSheet.create({
         bottom: 0,
         top: 0,
         width: Dimensions.get('window').width / 5,
-        // backgroundColor: 'red',
     },
 
     classify: {

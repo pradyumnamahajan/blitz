@@ -3,16 +3,7 @@ import { View, Text, TouchableOpacity, Dimensions, StyleSheet, Alert } from 'rea
 import RNFS from 'react-native-fs'
 import Realm from 'realm'
 import cropSchema from './../storage/realm/cropSchema'
-// import Swipeout from 'react-native-swipeout';
-// import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
-// import { TouchableHighlight } from 'react-native-gesture-handler';
-// import { TabHeading } from 'native-base';
 import Mailer from 'react-native-mail';
-// import GDrive from 'react-native-google-drive-api-wrapper';
-// import {  statusCodes,GoogleSigninButton } from '@react-native-community/google-signin';
-// import GoogleSignIn from 'react-native-google-sign-in';
-//import Share from 'react-native-share';
-// import { TouchableOpacity  } from 'react-native-gesture-handler'
 
 const { Parser } = require('json2csv');
 
@@ -74,7 +65,6 @@ class ExportPage extends Component{
              message:'Uploading Done'
            })
            
-           //const labels = ['classify','data_added','image_uri','lat','lon'];
            const fields = [{
              
              label: 'Crop Name',
@@ -132,15 +122,15 @@ class ExportPage extends Component{
 
         Mailer.mail({
           subject: 'CSV database file',
-          recipients: [],//'siddheshsovitkar@gmail.com','prad.greatt@gmail.com'
+          recipients: [],
           ccRecipients: [],
           bccRecipients: [],
-          body: '<b>This is a system generated mail containing your exported database .csv file, please dont reply to this mail.</b>',
+          body: '<b>Crop database</b>',
           isHTML: true,
           attachment: {
-            path: this.state.csv_url,  // The absolute path of the file from which to read data.
-            type: 'csv',   // Mime Type: jpg, png, doc, ppt, html, pdf, csv
-            name: 'CSV_data_file : created at : '+currentdate.getDate().toString(),   // Optional: Custom filename for attachment
+            path: this.state.csv_url, 
+            type: 'csv',   
+            name: 'CSV_data_file : created at : '+currentdate.getDate().toString(),  
           }
         }, (error, event) => {
           Alert.alert(
@@ -159,19 +149,6 @@ class ExportPage extends Component{
         })
       }
 
-      // open_db = async () => {
-      //     let a = await Realm.open({
-      //         path: RNFS.DocumentDirectoryPath + '/Realm_db/Database/Crops.realm',
-      //         schema: [cropSchema]
-      //     }).then((realm) =>{
-      //      let data = realm.objects('Crop')
-      //      console.log(data)
-           
-      //     })
-      // }
-
-
-
       timeout(ms){
         return new Promise(resolve=> setTimeout(resolve,ms));
       }
@@ -180,12 +157,11 @@ class ExportPage extends Component{
       handleUploadPhoto = async () => {
 
         const image = {
-          //uri : "./dummy.png",
           uri: this.state.uri,
           type: 'image/png',
           name: 'myImage' + '-' + Date.now() + '.png'
         }
-       // console.log(photo);
+
   
         var formData = new FormData(); 
   
@@ -194,7 +170,7 @@ class ExportPage extends Component{
   
         console.log("formdata = " + formData);
   
-        fetch("http://192.168.43.12:3000/upload", { //192.168.43.12 192.168.43.12
+        fetch("http://YOUR_IP_HERE:3000/upload", { 
           method: "POST",
           headers: {
             'Accept': 'application/json',
@@ -215,63 +191,11 @@ class ExportPage extends Component{
           });
       };
 
-
-      // shareCsv = () => {
-      //   let t = "file://"+ this.state.csv_url
-      //   const options = {
-      //     url : t,
-      //     type : 'csv',
-      //     email : 'siddheshsovitkar@gmail.com',
-      //     showAppsToView : true,
-      //     message : 'Share .csv',
-      //     filename : 'data.csv '
-      //   }
-      //   Share.open(options)
-      //   .then((res) => { console.log(res) })
-      //   .catch((err) => { err && console.log(err); });
-
-      // }
-      /*signIn = async () => {
-       
-        
-            GoogleSignIn.signInPromise().then((user)=>{
-            console.log(user);
-              this.setState({
-                accessToken : user.accessToken,
-              })
-              
-          }).then(()=>{
-              this.open_db()
-          }).catch(
-           (err) => {
-             console.log("error in signin");
-           }
-          )
-         
-
-       
-      };
-
-      init_drive = () =>{
-
-
-      }
-      componentWillMount(){
-        //GoogleSignIn.hasPlayServices()
-        GoogleSignIn.configure({
-          scopes: ['https://www.googleapis.com/auth/drive.appdata'],
-          shouldFetchBasicProfile: true,
-          forceConsentPrompt: true,
-          webClientId : "667834510826-ulei0o6779rd6rcjufs8me6corfkbm4d.apps.googleusercontent.com"
-        })
-      }
-     */
      
     render(){
         return(
 
                 <View  style={styles.centeredItem}>
-                    {/* <Button title = "Export .csv to Mail" onPress = {()=>{ this._exportPref()}} style={styles.buttonText}/> */}
 
                     <TouchableOpacity onPress = {()=>{ this._exportPref()}} style={styles.button}>
                       <Text style={styles.buttonText}>
@@ -283,10 +207,7 @@ class ExportPage extends Component{
                     <Text>
                       {this.state.message}
                     </Text>
-                      {/* <Button
-                        title = 'Share'
-                        onPress={this.shareCsv}
-                         /> */}
+                    
                 </View>
 
         )
@@ -316,8 +237,6 @@ const styles = StyleSheet.create({
       borderRadius: 20,
       justifyContent: "center",
       margin: 5,
-      // borderWidth:2,
-      // borderColor:'black',
       backgroundColor:'white'
   
     },

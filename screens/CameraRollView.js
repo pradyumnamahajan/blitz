@@ -1,9 +1,7 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 import {
   Image,
-  ScrollView,
   StyleSheet,
-  TouchableHighlight,
   View,
   Text,
   FlatList,
@@ -13,7 +11,6 @@ import {
 } from 'react-native';
 
 import CameraRoll from "@react-native-community/cameraroll"
-// import { TouchableNativeFeedback, TouchableOpacity } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs'
 import Realm from 'realm'
@@ -81,7 +78,6 @@ class CameraRollView extends Component {
         cropping: true,
         width: 500,
         height: 500,
-        //cropperCircleOverlay: true,
         compressImageMaxWidth: 640,
         compressImageMaxHeight: 480,
         freeStyleCropEnabled: true,
@@ -104,9 +100,7 @@ class CameraRollView extends Component {
         cropping: true,
         width: 300,
         height: 400,
-        //cropperCircleOverlay: true,
         freeStyleCropEnabled: true,
-        avoidEmptySpaceAroundImage: true,
         includeBase64: true,
         compressImageMaxWidth: 640,
         compressImageMaxHeight: 480,
@@ -124,16 +118,10 @@ class CameraRollView extends Component {
   }
 
   viewAllPhotos = () => {
-    // this.setState(prevState => ({
-    //   selectedOption: 
-    // }))
     this.selectPhoto("gallery")
   }
 
   viewCamera = () => {
-    // this.setState(prevState => ({
-    //   selectedOption: "camera"
-    // }))
     this.selectPhoto("camera")
   }
 
@@ -321,6 +309,8 @@ class CameraRollView extends Component {
       /* First Screen before image selection */
 
       return (
+
+        // Header
         <View style={{ flex: 1, backgroundColor: 'white' }}>
           <View style={{ height: Dimensions.get('window').width / 9 }}>
             <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignContent: "center" }}>
@@ -338,6 +328,8 @@ class CameraRollView extends Component {
             </View>
 
           </View>
+
+          {/* Scrollable Recent photos  */}
           <View style={{ flex: 1, backgroundColor: 'white', height: Dimensions.get('window').width / 2.5 + Dimensions.get('window').width / 40}}>
             <FlatList style={styles.container}
               data={this.state.images}
@@ -352,6 +344,8 @@ class CameraRollView extends Component {
               horizontal={true}
             />
           </View>
+
+          {/* Select image from camera/gallery options */}
           <View style={{ flex: 3 }}>
             <View style={[styles.centeredItem, {justifyContent:'flex-end'}]}>
               <TouchableOpacity onPress={this.viewCamera}>
@@ -417,10 +411,6 @@ class CameraRollView extends Component {
 
           </View>
 
-          {/* <View style={styles.centeredItem}>
-            
-          </View>
-           */}
         </View>
       )
 
@@ -499,8 +489,6 @@ const styles = StyleSheet.create({
       borderRadius: 20,
       justifyContent: "center",
       margin: 5,
-      // borderWidth:2,
-      // borderColor:'black',
       backgroundColor:'white'
   
     },

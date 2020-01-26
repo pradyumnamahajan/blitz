@@ -8,7 +8,6 @@ export default class HomeScreen extends Component{
   render(){
     return(
 
-      ///<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <ImageBackground source={require('./../assets/crop.png')} style={styles.backgroundImage} blurRadius={3} imageStyle={{ opacity: 0.6 }} >
         <View style={{flex:2,     justifyContent: 'center'}}>
           <Text style={styles.title}>CropDex</Text>
@@ -59,8 +58,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     margin: 5,
-    // borderWidth:2,
-    // borderColor:'black',
     backgroundColor:'white'
 
   },
@@ -81,9 +78,7 @@ const styles = StyleSheet.create({
     shadowOpacity:0.3,
     
     textShadowColor:'black',
-    // borderColor:'black',
-    // borderWidth:1,
-
+ 
   }
 
 })
